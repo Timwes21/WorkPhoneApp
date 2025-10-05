@@ -1,0 +1,33 @@
+name: "tests"
+
+on:
+  push: 
+    branches: ["master"]
+
+env:
+  GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+  ACCOUNT_SID: ${{ secrets.ACCOUNT_SID }}
+  AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+  OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  BOT_ID: ${{ secrets.BOT_ID }}
+  MONGO_URL: ${{ secrets.MONGO_URL }}
+  NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  ALGORITHM: ${{ secrets.ALGORITHM }}
+
+
+jobs:
+  backend_tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  
+      - run: pip install -r requirements.txt
+      - run: pytest

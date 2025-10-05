@@ -1,0 +1,70 @@
+.auth-body{
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
+    align-self: center;
+    width: 20%;
+    padding: 20px;
+    box-shadow: 1px 1px 10px black;
+    border-radius: 15px;
+    gap: 10px;
+}
+.auth-header{
+    margin: 0;
+    padding: 0;
+}
+.inputs{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.create-an-account:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.twilio-instructions{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    width: 70%;
+    align-self: center;
+}
+.twilio-image{
+    width: 100%;
+}
+.twilio-instructions ul li{
+    font-size: larger;
+}
+#back-to-create-account{
+    align-self:center;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    border: 0;
+    text-decoration: none;
+    box-shadow: 0px 0px 10px black;
+}
+#create-account-button{
+    background-color: rgb(255, 255, 255);
+    color: black;
+    cursor: pointer;
+}
+/* .page{
+    display: flex;
+    align-items: center;
+    justify-content: center; */
+/* } */
+/* .clerk-signin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
