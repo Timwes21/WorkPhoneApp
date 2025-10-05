@@ -1,6 +1,6 @@
 import { verifyWebhook } from '@clerk/express/webhooks';
 import express from 'express';
-import ngrok from "@ngrok/ngrok"
+// import ngrok from "@ngrok/ngrok"
 import dotenv from "dotenv";
 import { MongoClient } from 'mongodb';
 
@@ -17,7 +17,7 @@ const documentCollection = db.collection("docs");
 const userInfoCollection = db.collection("user_info");
 
 
-ngrok.authtoken(process.env.NGROK_TOKEN);
+// ngrok.authtoken(process.env.NGROK_TOKEN);
 
 const app = express();
 
