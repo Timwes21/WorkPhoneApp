@@ -61,8 +61,8 @@ app.post('/api/webhooks/subscription-created', express.raw({ type: 'application/
 const PORT = 1234;
 app.listen(PORT, async() =>{
     console.log("Comic Log Server running on port 3000");
-    const url = await ngrok.connect(PORT);
-    console.log(url.url());
+    // const url = await ngrok.connect(PORT);
+    // console.log(url.url());
     
 
 
