@@ -5,6 +5,9 @@ dotenv.config();
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  preview: {
+    allowedHosts: ["frontend-production-aa63.up.railway.app"],
+  },
 })
 
 
