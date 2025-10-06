@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config config/vite.config.ts",
-    "build": "vite build --config config/vite.config.ts",
-    "lint": "eslint .",
-    "start": "vite preview --host 0.0.0.0 --port $PORT",
-    "preview": "vite preview --host 0.0.0.0 --port $PORT"
-  },
+  "dev": "vite --config config/vite.config.ts",
+  "build": "vite build --config config/vite.config.ts",
+  "lint": "eslint .",
+  "start": "vite preview --config config/vite.config.ts --host 0.0.0.0 --port ${PORT:-4173}",
+  "preview": "vite preview --config config/vite.config.ts --host 0.0.0.0 --port ${PORT:-4173}"
+},
   "dependencies": {
     "@clerk/clerk-react": "^5.45.0",
     "dotenv": "^17.0.1",
@@ -30,4 +30,5 @@
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"
   }
+  
 }
