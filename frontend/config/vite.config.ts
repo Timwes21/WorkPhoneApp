@@ -6,8 +6,12 @@ dotenv.config();
 export default defineConfig({
   plugins: [react()],
   preview: {
+    host: true,
     allowedHosts: ["frontend-production-aa63.up.railway.app"],
   },
+  server: {
+    allowedHosts: ["frontend-production-aa63.up.railway.app"],
+  }
 })
 
 
