@@ -1,7 +1,7 @@
 import NavBar from '../components/navbar.tsx';
 import BlockedList from '../components/blocked.tsx'
 import { useEffect, useState } from 'react';
-import { authBase } from '../routes.ts';
+import { userSettingsBase } from '../routes.ts';
 import { useAuth } from "@clerk/clerk-react";
 import BlockedMessage from '../components/blocked-message.tsx';
 
@@ -20,7 +20,7 @@ export default function Blocked() {
         (async()=>{
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const fetchedBlockedMessage = await fetch(authBase + "/get-blocked-message", {
+            const fetchedBlockedMessage = await fetch(userSettingsBase + "/get-blocked-message", {
                 headers : {
                     "token": fetchedToken
                 }
@@ -31,7 +31,7 @@ export default function Blocked() {
     }, [refresh])
 
     const saveChanges = () => {
-        fetch(authBase + "/update-blocked-message", {
+        fetch(userSettingsBase + "/update-blocked-message", {
             method: "POST",
             headers : {
                 "Content-Type": "application/json",

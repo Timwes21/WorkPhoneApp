@@ -1,6 +1,8 @@
 import NavBar from '../components/navbar.tsx';
 import Files from "../components/files.tsx";
 import Logs from "../components/logs.tsx";
+import Prompt from '../components/prompt.tsx';
+import Greeting from '../components/greeting.tsx';
 
 
 
@@ -15,6 +17,10 @@ export default function Assistant() {
         <h2 className='page-title'>AI Assistant</h2>
         <div className="page-content">
             <Files/>
+            <div style={{display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-around", alignItems: "center"}}>
+                <Prompt/>
+                <Greeting/>
+            </div>
             <Logs/>
         
         </div>

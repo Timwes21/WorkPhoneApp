@@ -1,0 +1,43 @@
+def get_config(greeting, prompt):
+    return {
+        "type": "Settings",
+        "audio": {
+            "input": {
+                "encoding": "mulaw",
+                "sample_rate": 8000
+            },
+            "output": {
+                "encoding": "mulaw",
+                "sample_rate": 8000,
+                "container": "none"
+            }
+        },
+        "agent": {
+            "language": "en",
+            "listen": {
+                "provider": {
+                    "type": "deepgram",
+                    "model": "nova-3",
+                    "keyterms": ["hello", "goodbye"]
+                }
+            },
+            "think": {
+                "provider": {
+                    "type": "open_ai",
+                    "model": "gpt-4o-mini",
+                    "temperature": 0.7
+                },
+                "prompt": prompt,
+                "functions": [
+                
+                ]
+            },
+            "speak": {
+                "provider": {
+                    "type": "deepgram",
+                    "model": "aura-2-thalia-en"
+                }
+            },
+            "greeting": greeting
+        }
+    }

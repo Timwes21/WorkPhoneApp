@@ -6,10 +6,10 @@ import { useAuth } from "@clerk/clerk-react";
 
 
 
-export default function BlockedMessage() {
+export default function Greeting() {
     const [ token, setToken ] = useState<string>("");
-    const [ blockedMessage, setBlockedMessage ] = useState<string>("");
-    const [ editableBlockedMessage, setEditableBlockedMessage ] = useState<string>("");
+    const [ prompt, setPrompt ] = useState<string>("");
+    const [ editableGreeting, setEditableGreeting ] = useState<string>("");
     const [ editting, setEditting ] = useState<boolean>(false);
     const [ refresh, setRefresh ] = useState<boolean>(false);
     const { getToken } = useAuth();
@@ -18,18 +18,15 @@ export default function BlockedMessage() {
         (async()=>{
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const res = await fetch(userSettingsBase + "/get-blocked-message", {
+            const res = await fetch(userSettingsBase + "/get-greeting", {
                 headers : {
                     "token": fetchedToken
                 }
             })
-            console.log(res);
+            const fetchedGreeting = (await res.text()).replaceAll("\"", "");
             
-            const fetchedMessage = (await res.text()).replaceAll("\"", "");
-            console.log(fetchedMessage);
-            
-            setBlockedMessage(fetchedMessage);
-            setEditableBlockedMessage(fetchedMessage);
+            setPrompt(fetchedGreeting);
+            setEditableGreeting(fetchedGreeting);
         })()
 
     }, [refresh])
@@ -42,7 +39,7 @@ export default function BlockedMessage() {
                 "Content-Type": "application/json",
                 "token": token
             },
-            body: JSON.stringify({changed: {"blocked_message": editableBlockedMessage}})
+            body: JSON.stringify({changed: {"greeting_message": editableGreeting}})
         })
         .then(r=>r.json())
         .then(d=>{
@@ -51,7 +48,7 @@ export default function BlockedMessage() {
                 
                 setEditting(false);
                 setRefresh(!refresh);
-                setBlockedMessage(editableBlockedMessage);
+                setPrompt(editableGreeting);
             }
             else {
                 cancel();
@@ -61,7 +58,7 @@ export default function BlockedMessage() {
     }
 
     const cancel = () => {
-        setEditableBlockedMessage(blockedMessage);
+        setPrompt(prompt);
         setEditting(false);
     }
 
@@ -77,10 +74,10 @@ export default function BlockedMessage() {
   return (
     
         
-    <div className="blocked-message-con">
-        <h4>Message to Blocked Caller</h4>
+    <div className="blocked-message-con" style={{width: "90%"}}>
+        <h4>Greeting for your AI Assistant</h4>
         <div style={{display: "flex", justifyContent: "center"}} className="block-message">
-            {editting? <textarea value={editableBlockedMessage} onChange={e=>setEditableBlockedMessage(e.target.value)} style={{width: "80%" }} name="" id=""></textarea>:blockedMessage}
+            {editting? <textarea rows={5} value={editableGreeting} onChange={e=>setEditableGreeting(e.target.value)} className='edit-text' name="" id=""></textarea>:prompt}
         </div>
         <div style={{display: "flex", justifyContent: "center", padding: "5px"}}>
             {editting? editButtons:<button onClick={()=>setEditting(true)}>Edit</button>}

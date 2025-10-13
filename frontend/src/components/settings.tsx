@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { authBase } from "../routes";
+import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 
 
@@ -32,7 +32,7 @@ export default function Settings(){
             
             
 
-            fetch(authBase + "/user-settings", {
+            fetch(userSettingsBase + "/user-settings", {
                 headers: {"token": fetchedToken},
             })
             .then(response=>{
@@ -84,8 +84,8 @@ export default function Settings(){
         })
         
         if (Object.keys(changed).length === 0) return;
-        
-        fetch(authBase + "/change-user-settings",{
+
+        fetch(userSettingsBase + "/change-user-settings",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

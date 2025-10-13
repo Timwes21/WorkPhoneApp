@@ -196,3 +196,7 @@ button{
   padding: 5px;
   width: 30%;
 }
+.edit-text{
+  width: 90%;
+  height:max-content;
+}

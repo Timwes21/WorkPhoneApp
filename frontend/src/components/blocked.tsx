@@ -1,10 +1,8 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react"
-import { authBase } from "../routes";
+import { userSettingsBase } from "../routes";
 
 export default function BlockedList(){
-    const { has } = useAuth();
-    const hasPlan = has?.({ plan: "paid_tier"});
     const { getToken } = useAuth();
     const [ token, setToken ] = useState<string>("");
     const [ number, setNumber ] = useState<string>("");
@@ -16,7 +14,7 @@ export default function BlockedList(){
         (async()=>{
             const fetchedToken = await getToken() || ""
             setToken(fetchedToken);
-            fetch(authBase + "/blocked-numbers", {
+            fetch(userSettingsBase + "/blocked-numbers", {
                 headers: {
                     "token": fetchedToken
                 }
@@ -32,7 +30,7 @@ export default function BlockedList(){
         if (number.length !== 10)return;
         
         setNumber(prev=>prev.replace("(", "").replace(")", "").replace("-", "").replace(" ", ""))
-        fetch(authBase + "/add-blocked-number", {
+        fetch(userSettingsBase + "/add-blocked-number", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -48,7 +46,7 @@ export default function BlockedList(){
 
 
     const removeNumber = (number: string, index: number) => () => {
-        fetch(authBase + "/remove-blocked-number", {
+        fetch(userSettingsBase + "/remove-blocked-number", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

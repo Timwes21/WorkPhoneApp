@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 export default function Header(){
     const { isSignedIn, user } = useUser();
-    console.log(isSignedIn);
+    console.log("signed in: ", isSignedIn);
     
 
     return (

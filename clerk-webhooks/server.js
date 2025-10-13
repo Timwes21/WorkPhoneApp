@@ -32,11 +32,13 @@ app.post('/api/webhooks/user-created', express.raw({ type: 'application/json' })
     documentCollection.insertOne({clerk_sub: id});
     userInfoCollection.insertOne({clerk_sub: id, 
                                   name: `${first_name?`${first_name}${last_name? " " + last_name: ""}`: ""}`, 
-                                  real_number: "", 
-                                  twilio_number: "", 
-                                  plan: "free", 
+                                  real_number: "",
+                                  twilio_number: "",
+                                  plan: "free",
                                   blocked_numbers: [], 
-                                  blocked_message: "You have been restricted from contacting this number"});
+                                  blocked_message: "You have been restricted from contacting this number",
+                                  greeting_message: message = `Hello! I'm sorry ${first_name? first_name: "your party"} didn't pick up, I can answer any questions you may have.`,
+                                  ai_prompt: "You are an ai assistant that answers the phone when the user does not pick up. You are to get their name and number, as this conversation will be logged and looked at later to call them back"});
 
     return res.send('Webhook received');
   } catch (err) {
@@ -44,6 +46,25 @@ app.post('/api/webhooks/user-created', express.raw({ type: 'application/json' })
     return res.status(400).send('Error verifying webhook');
   }
 })
+
+app.post('/api/webhooks/user-deleted', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const evt = await verifyWebhook(req);
+    
+    
+    const { id } = evt.data;
+
+    callLogsCollection.deleteOne({clerk_sub: id});
+    documentCollection.deleteOne({clerk_sub: id});
+    userInfoCollection.deleteOne({clerk_sub: id});
+
+    return res.send('Webhook received');
+  } catch (err) {
+    console.error('Error verifying webhook:', err);
+    return res.status(400).send('Error verifying webhook');
+  }
+})
+
 
 app.post('/api/webhooks/subscription-created', express.raw({ type: 'application/json' }), async (req, res) => {
   try {

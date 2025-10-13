@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Form, UploadFile
 from fastapi.responses import JSONResponse
 from utils.query import save_docs_with_faiss
 from utils.file_parse import get_doc_contents
+from jwt.exceptions import DecodeError
 
 
 

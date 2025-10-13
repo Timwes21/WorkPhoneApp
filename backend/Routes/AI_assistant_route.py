@@ -3,6 +3,7 @@ from utils.call_choice import dial_agent, dial_person, blocked_number
 from utils.query import ask_document
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from utils.deepgram_ws import DGWS
+from datetime import datetime
 import os
 
 OPENAI_API_KEY = os.getenv('OPENAI_KEY')
@@ -14,14 +15,16 @@ router = APIRouter()
 async def handle_incoming_call(request: Request, webhook_token: str):
     print("***in incoming-call route***")
     user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token})
+    print(type(user))
     form = await request.form()
     callsid = form.get("From", "")
     if callsid in user.get("blocked_numbers", []):
         return blocked_number(user)
-    return dial_person(webhook_token, user)
+    # return dial_person(webhook_token, user, callsid)
+    return dial_agent(request, user, callsid)
 
-@router.post("/get-call-status/{webhook_token}")
-async def call_status(request: Request, webhook_token: str):
+@router.post("/get-call-status/{webhook_token}/{callsid}")
+async def call_status(request: Request, webhook_token: str, callsid: str):
     print("***In get-call-status route**")
     body: bytes = await request.body()
     body: str = body.decode()
@@ -30,12 +33,12 @@ async def call_status(request: Request, webhook_token: str):
     user = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0})
 
     if body["DialCallStatus"] != "completed" and user["plan"] != "free":
-        return await dial_agent(request, user)
+        return await dial_agent(request, user, callsid)
     
 
 
-@router.websocket("/media-stream/{webhook_token}")
-async def handle_media_stream(websocket: WebSocket, webhook_token: str):
+@router.websocket("/media-stream/{webhook_token}/{callsid}")
+async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid: str):
     """Handle WebSocket connections between Twilio and OpenAI"""
     await websocket.accept()
     try:
@@ -44,12 +47,47 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str):
         call_log_collection = websocket.app.state.call_log_collection
 
         deepgram = DGWS(user_info_collection, call_log_collection, files_collection)
-        call_logs, clerk_sub = await deepgram.start(websocket, webhook_token)
-        call_log_collection.update_one({"clerk_sub": clerk_sub}, {"$push": {"logs": call_logs}})
+        call_completed: dict = await deepgram.start(websocket, webhook_token)
+        print("code was executed")
+        
+        clerk_sub = call_completed["clerk_sub"]
+        call_logs = call_completed["call_logs"]
+
+        now = datetime.now()
+        day = now.strftime("%B; %d; %Y; %H:%M")
+        month, day, year, time = day.split(";")
+        hours, minutes = time.split(":")
+        hours = int(hours)
+        if hours > 12:
+            hours -= 12 
+            setting = "pm"
+        else:
+            setting = "am"
+            if hours == 0:
+                hours = 12
+
+
+
+
+        call = {
+            "callsid": callsid,
+            "date": {
+                "month": month[:3],
+                "day": day,
+                "year": year,
+                "time": f"{hours}:{minutes}{setting}"
+            },
+            "transcript": call_logs,
+
+
+        }
+        call_log_collection.update_one({"clerk_sub": clerk_sub}, {"$push": {"logs": call}})
+        
         
 
 
-        websocket.close()
+        await websocket.close()
+        print("websocket has been closed")
 
     except WebSocketDisconnect as e:
         print(e)
@@ -58,16 +96,26 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str):
 
 
 
-@router.get("/get-call-logs")
-async def get_call_logs(request: Request, offset: int = 0, limit: int = 20):
+@router.get("/get-call-logs/{page}")
+async def get_call_logs(request: Request, page: int):
+    display_number = 10
+    start = page * display_number
     clerk_sub = request.app.state.decode_token(request)
     collection = request.app.state.call_log_collection
-    query = {"clerk_sub", clerk_sub}
-    project = {"_id": 0, "logs": {"$slice": [offset, limit]}}
+    query = { "$match": {"clerk_sub": clerk_sub} }
+    projection = { "$project": {
+        "_id": 0, 
+        "logs": {
+            "$slice": [{ "$reverseArray": "$logs" },
+            start, display_number]
+            }
+        }
+    }
+    res: list[dict] = await collection.aggregate([query, projection]).to_list(1)
 
-    res = await collection.find_one(query, project)
+    logs = res[0].get("logs", [])
+    has_more = len(logs) == 10
+    print("has more logs", has_more)
 
-    logs = res.get("logs", [])
-    next_offset = offset + len(logs) if len(logs) == limit else None
 
-    return {"items": logs, "next_offset": next_offset}
+    return {"CallLogList": logs, "hasMore": has_more}

@@ -4,7 +4,7 @@ import twilioImageThree from "../assets/twilio3.png";
 import twilioImageFour from "../assets/twilio4.png";
 import twilioImageFive from "../assets/twilio5.png";
 import { Link } from "react-router-dom";
-import { authBase } from "../routes";
+import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 
@@ -14,7 +14,7 @@ export default function TwilioTutorial(){
 
     const generateToken = async() => {
         const fetchedToken = await getToken() || "";
-        const fetchedWebhookToken = await fetch(authBase + '/generate-new-webhook-token', {
+        const fetchedWebhookToken = await fetch(userSettingsBase + '/generate-new-webhook-token', {
             headers: {"token": fetchedToken},
         });
 
@@ -25,7 +25,7 @@ export default function TwilioTutorial(){
     useEffect(()=> {
         (async()=>{
             const fetchedToken = await getToken() || "";
-            const fetchedWebhookToken = await fetch(authBase + '/get-webhook-token', {
+            const fetchedWebhookToken = await fetch(userSettingsBase + '/get-webhook-token', {
                 headers: {"token": fetchedToken},
             });
             setWebhookToken((await fetchedWebhookToken.text()).replaceAll("\"", ""));
@@ -65,7 +65,7 @@ export default function TwilioTutorial(){
                     <li>Head to the section where a url comes in through a webhook</li>
                     <li>Change the url to:  <br /> 
                         <b>
-                            https://backend-production-8368.up.railway.app/ai-assistant/incoming-call/{webhookToken}
+                            https://workphoneapp-production.up.railway.app/ai-assistant/incoming-call/{webhookToken}
                         </b>
                         </li>
                     <button onClick={generateToken}>Generate New Token</button>

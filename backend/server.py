@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from ngrok import connect
 from Routes.AI_assistant_route import router as AI_assistant_route
 from Routes.user_settings_route import router as auth_routes
-from Routes.file_routes import router as file_routes 
+from Routes.file_routes import router as file_routes
 from Routes.portfolio_route import router as test_route
 
 
@@ -32,6 +32,7 @@ app.include_router(AI_assistant_route, prefix="/ai-assistant", tags=["AI Assista
 app.include_router(file_routes, prefix="/files", tags=["files"])
 app.include_router(auth_routes, prefix="/auth", tags=["auth"])
 app.include_router(test_route, prefix="/portfolio", tags=["test"])
+
 
 
 
