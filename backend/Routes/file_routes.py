@@ -25,6 +25,7 @@ async def save_files(request: Request, file: UploadFile = Form(...)):
     
     res_docs = await docs_collection.find_one({"clerk_sub": clerk_sub})
     files = res_docs.get('files', [])
+    # not as readable but comprehension is faster than nested for loops
     file_names = [file_name async for _,file in get_list(files) async for file_name,_ in get_dict(file)]
     if file_name in file_names:
         return {"file_exists": True}

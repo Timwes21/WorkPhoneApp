@@ -229,15 +229,20 @@ class DGWS:
             config = self.load_config(greeting, prompt)
             await sts_ws.send(json.dumps(config))
             
-
-            await asyncio.wait(
-                [
+            tasks = [
                     asyncio.ensure_future(self.sts_sender(sts_ws, audio_queue)),
                     asyncio.ensure_future(self.sts_receiver(sts_ws, websocket, streamsid_queue)),
                     asyncio.ensure_future(self.twilio_receiver(websocket, audio_queue, streamsid_queue)),
-                ],
+                ]
+
+            _, pending_tasks = await asyncio.wait(
+                tasks,
                 return_when=asyncio.FIRST_COMPLETED
             )
+
+        for i in pending_tasks:
+            i.cancel()
+
         print("after the futures")
 
         return {"call_logs": self.call_logs, "clerk_sub": res_files["clerk_sub"]}

@@ -36,22 +36,38 @@ export default function Logs(){
         })()    
     }, [page])
 
-    const el = scrollRef.current;
-    const topOfScrollBar = el?.scrollTop;
-    const divHeight = el?.scrollHeight;
-    const scrollBarHeight = el?.clientHeight;
-
-    const canLoadMoreLogs = topOfScrollBar + scrollBarHeight == divHeight && !loading && hasMore;
+    // console.log(logs.length);
     
 
-    if (canLoadMoreLogs){
-        console.log("getting more logs");
-        setPage(prev=>prev+=1);
-        setLoading(true);
+    // const el = scrollRef.current;
+    
+    
+    
+    const onscroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const el = e.currentTarget
+        const topOfScrollBarPos = el?.scrollTop;
+        const divHeight = el?.scrollHeight;
+        const scrollBarHeight = el?.clientHeight;
+        const bottomOfScrollBarPos = topOfScrollBarPos + scrollBarHeight;
+        
+        // console.log("scrollbar", bottomOfScrollBarPos);
+        // console.log("div", divHeight);
+        const canLoadMoreLogs = bottomOfScrollBarPos >= divHeight -1 && !loading && hasMore;
+        const loadMore = () => {
+            console.log("getting more logs");
+            setPage(prev=>prev+=1);
+            setLoading(true);
+            
+        }
+        
+        if (canLoadMoreLogs){
+            loadMore();
+        }
     }
 
     
 
+    console.log(logs.length);
     
     
     
@@ -62,7 +78,7 @@ export default function Logs(){
         <div className="missed-calls">
             <h2 className="sub-headings">Missed Call Logs</h2>
             <hr />
-            <div ref={scrollRef} style={{color: "black", overflow: "auto", paddingBottom: "20px"}}>
+            <div ref={scrollRef} onScroll={onscroll} style={{color: "black", overflowY: "auto", paddingBottom: "20px", borderBottomLeftRadius: "10px", borderBottomRightRadius: "10px"}}>
 
                 {logs?.map((log, _)=>(
                     <Log callLog={log}/>

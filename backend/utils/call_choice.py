@@ -1,8 +1,8 @@
 from twilio.twiml.voice_response import VoiceResponse, Connect, Say, Stream
 from fastapi.responses import HTMLResponse
 
-async def dial_person(webhook_token, real_number, callsid):
-    real_number = f"+1{real_number}"
+def dial_person(webhook_token, user, callsid):
+    real_number = f"+1{user["real_number"]}"
     response = VoiceResponse()
     dial = response.dial(number=real_number, action=f"/ai-assistant/get-call-status/{webhook_token}/{callsid}", timeout=15)
     response = VoiceResponse()

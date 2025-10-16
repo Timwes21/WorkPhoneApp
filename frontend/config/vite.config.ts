@@ -7,10 +7,10 @@ export default defineConfig({
   plugins: [react()],
   preview: {
     host: true,
-    allowedHosts: ["frontend-production-aa63.up.railway.app"],
+    allowedHosts: ["frontend-production-aa63.up.railway.app", "workphone.it.com"],
   },
   server: {
-    allowedHosts: ["frontend-production-aa63.up.railway.app"],
+    allowedHosts: ["frontend-production-aa63.up.railway.app", "workphone.it.com"],
   }
 })
 

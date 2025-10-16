@@ -15,13 +15,16 @@ router = APIRouter()
 async def handle_incoming_call(request: Request, webhook_token: str):
     print("***in incoming-call route***")
     user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token})
-    print(type(user))
     form = await request.form()
     callsid = form.get("From", "")
-    if callsid in user.get("blocked_numbers", []):
-        return blocked_number(user)
-    # return dial_person(webhook_token, user, callsid)
-    return dial_agent(request, user, callsid)
+    for i in user.get("blocked_numbers", []):
+        if i in callsid: 
+            return blocked_number(user)
+    print("not blocked")
+    if user["real_number"] in callsid:
+        return dial_agent(request, user, callsid)
+    print("not the user")
+    return dial_person(webhook_token, user, callsid)
 
 @router.post("/get-call-status/{webhook_token}/{callsid}")
 async def call_status(request: Request, webhook_token: str, callsid: str):
@@ -32,8 +35,8 @@ async def call_status(request: Request, webhook_token: str, callsid: str):
         
     user = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0})
 
-    if body["DialCallStatus"] != "completed" and user["plan"] != "free":
-        return await dial_agent(request, user, callsid)
+    if body["DialCallStatus"] != "completed" and user.get("plan") != "free":
+        return dial_agent(request, user, callsid)
     
 
 
@@ -98,7 +101,7 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
 
 @router.get("/get-call-logs/{page}")
 async def get_call_logs(request: Request, page: int):
-    display_number = 10
+    display_number = 15
     start = page * display_number
     clerk_sub = request.app.state.decode_token(request)
     collection = request.app.state.call_log_collection
@@ -114,7 +117,7 @@ async def get_call_logs(request: Request, page: int):
     res: list[dict] = await collection.aggregate([query, projection]).to_list(1)
 
     logs = res[0].get("logs", [])
-    has_more = len(logs) == 10
+    has_more = len(logs) == display_number
     print("has more logs", has_more)
 
 
