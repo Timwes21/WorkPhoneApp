@@ -9,7 +9,7 @@ import { useAuth } from "@clerk/clerk-react";
 
 
 function App() {
-  const { has } = useAuth();
+  const { has, isSignedIn } = useAuth();
   const hasPlan = has?.({ plan: "paid_tier"});
   
 
@@ -21,8 +21,12 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/twilio-tutorial' element={<TwilioTutorial/>}/>
-        <Route path='/blocked' element={<Blocked/>}/>
-        {<Route path='/ai' element={<Assistant/>}/>}
+        {isSignedIn&& (
+          <>
+            <Route path='/blocked' element={<Blocked/>}/>
+            {hasPlan && <Route path='/ai' element={<Assistant/>}/>}
+          </>
+        )}
       </Routes>
     </div>
     </BrowserRouter>

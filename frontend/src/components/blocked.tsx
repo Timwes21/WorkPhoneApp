@@ -21,7 +21,7 @@ export default function BlockedList(){
             })
             .then(response=>response.json())
             .then(data=>{
-                setBlockedNumbers(data.numbers)
+                setBlockedNumbers(data.numbers || [])
             })
         })()
     }, [refresh])
@@ -71,6 +71,8 @@ export default function BlockedList(){
     )
 
 
+    console.log(blockedNumbers);
+    
     const displayBlockedNumbers = (
         <ul style={{color: "black", listStyle: "none"}}>
 

@@ -22,7 +22,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://workphone-production.up.railway.app", "https://timwes21dev.com"],
+    allow_origins=["http://localhost:5173", "https://workphone.it.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

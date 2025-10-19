@@ -1,9 +1,9 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './styles/index.css'
-import './styles/login.css'
-import App from './App.tsx'
-import { ClerkProvider } from '@clerk/clerk-react'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles/index.css';
+import './styles/login.css';
+import App from './App.tsx';
+import { ClerkProvider } from '@clerk/clerk-react';
 
 
 

@@ -3,5 +3,3 @@ console.log(base);
 
 export const userSettingsBase = base + "/auth";
 export const fileBase = base + "/files";
-
-
