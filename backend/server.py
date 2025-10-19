@@ -42,4 +42,7 @@ if __name__ == "__main__":
     import uvicorn
     # res = connect(addr=PORT, authtoken=NGROK_TOKEN); 
     # print(f"Access at {res.url()}")
-    uvicorn.run(app, port=PORT)
+    uvicorn.run(
+        app, 
+        # host="0.0.0.0", 
+        port=PORT)

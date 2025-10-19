@@ -18,8 +18,8 @@ export default function BlockedMessage() {
         (async()=>{
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const res = await fetch(userSettingsBase + "/get-blocked-message", {
-            // const res = await fetch("https://workphoneapp.fly.dev/get-blocked-message", {
+            // const res = await fetch(userSettingsBase + "/get-blocked-message", {
+            const res = await fetch("https://workphoneapp.fly.dev/get-blocked-message", {
                 headers : {
                     "token": fetchedToken
                 }
