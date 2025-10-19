@@ -1,2 +1,5 @@
 [build]
-  dockerfile = "Dockerfile"
+    dockerfile = "Dockerfile"
+
+[http_sercive]
+    internal_port = 8000
