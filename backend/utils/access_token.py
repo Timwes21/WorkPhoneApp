@@ -10,6 +10,7 @@ load_dotenv()
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = os.environ["ALGORITHM"]
+
 def create_access_token() -> list:
     current = str(time.time())
     encoded_jwt = encode({"current": current}, SECRET_KEY, algorithm=ALGORITHM)

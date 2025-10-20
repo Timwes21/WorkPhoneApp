@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
-from jwt import encode, decode
 import secrets
 from pydantic import BaseModel
+from typing import TypedDict
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -19,6 +19,23 @@ router = APIRouter()
 class Updated(BaseModel):
     updated: str
 
+
+# class UserSettings(TypedDict):
+
+
+
+
+
+
+@router.get("/get-user-settings", response_class=JSONResponse)
+async def user_settings(request: Request):
+    clerk_sub = request.app.state.decode_token(request)
+    collection = request.app.state.user_info_collection
+    print("getting settings")
+    result = await collection.find_one({'clerk_sub': clerk_sub}, {"_id":0, "clerk_sub": 0})
+    # if result.get("")
+    print("got settings")
+    return {"results": result}
 
 
 @router.get("/user-settings", response_class=JSONResponse)
@@ -47,7 +64,7 @@ async def blocked_numbers(request: Request):
     clerk_sub = request.app.state.decode_token(request)
     collection = request.app.state.user_info_collection
     result = await collection.find_one({'clerk_sub': clerk_sub}, {"_id":0, "blocked_numbers": 1})
-    return {"numbers": result.get("blocked_numbers", [])}
+    return {"blockedNumbers": result.get("blocked_numbers", [])}
 
 
 @router.post("/add-blocked-number", response_class=JSONResponse)
@@ -77,10 +94,7 @@ async def get_webhook_token(request: Request):
 
 @router.get("/get-webhook-token", response_class=JSONResponse)
 async def get_webhook_token(request: Request):
-    try:
-        clerk_sub = request.app.state.decode_token(request)
-    except: 
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing token")
+    clerk_sub = request.app.state.decode_token(request)
 
     user_info_collection = request.app.state.user_info_collection
     user = await user_info_collection.find_one({'clerk_sub': clerk_sub})
