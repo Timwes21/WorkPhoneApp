@@ -23,12 +23,12 @@ export default function BlockedMessage() {
 
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const message = userDataContext.blocked_message;
+            const message = userDataContext?.blocked_message;
             setBlockedMessage(message);
             setEditableBlockedMessage(message);
         })()
 
-    }, [userDataContext.blocked_message])
+    }, [userDataContext?.blocked_message])
 
     const saveChanges = () => {
         
