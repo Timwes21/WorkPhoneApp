@@ -21,23 +21,25 @@ function App() {
 
   useEffect(()=> {
     (async()=>{
+      if (isSignedIn){
 
-      const fetchedToken = await getToken() || "";
-      // fetch(userSettingsBase + "/get-user-settings", {
-      fetch("https://workphoneapp-production.up.railway.app/auth/get-user-settings", {
-        headers: {
-          "token": fetchedToken
+        const fetchedToken = await getToken() || "";
+        // fetch(userSettingsBase + "/get-user-settings", {
+          fetch("https://workphoneapp-production.up.railway.app/auth/get-user-settings", {
+            headers: {
+              "token": fetchedToken
+            }
+          })
+          .then(response=>response.json())
+          .then(data=>{
+            console.log(data.results);
+            setUserData(data?.results || dataSkeleton)
+            // console.log(userData);
+            
+            
+          })
         }
-      })
-      .then(response=>response.json())
-      .then(data=>{
-        console.log(data.results);
-        setUserData(data?.results || dataSkeleton)
-        // console.log(userData);
-        
-        
-      })
-    })()
+        })()
   }, [])
   
 

@@ -23,6 +23,8 @@ const app = express();
 
 app.post('/api/webhooks/user-created', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
+    console.log("creating user");
+    
     const evt = await verifyWebhook(req);
     
     
@@ -49,6 +51,7 @@ app.post('/api/webhooks/user-created', express.raw({ type: 'application/json' })
 
 app.post('/api/webhooks/user-deleted', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
+    console.log("deleting user");
     const evt = await verifyWebhook(req);
     
     
@@ -68,6 +71,7 @@ app.post('/api/webhooks/user-deleted', express.raw({ type: 'application/json' })
 
 app.post('/api/webhooks/subscription-created', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
+    console.log("creating subscription");
     const evt = await verifyWebhook(req);
     const { id } = evt.data;
 
