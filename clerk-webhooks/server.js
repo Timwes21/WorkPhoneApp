@@ -68,6 +68,17 @@ app.post('/api/webhooks/user-deleted', express.raw({ type: 'application/json' })
   }
 })
 
+app.post('/testing', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    console.log("testing server");
+
+    return res.send('test route works');
+  } catch (err) {
+    console.error('Error verifying webhook:', err);
+    return res.status(400).send('Error verifying webhook');
+  }
+})
+
 
 app.post('/api/webhooks/subscription-created', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
