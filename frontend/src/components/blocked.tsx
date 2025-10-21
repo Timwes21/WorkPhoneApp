@@ -18,7 +18,7 @@ export default function BlockedList(){
             const list = userDataContext.blocked_numbers;
             setBlockedNumbers(list);
         })()
-    }, [userDataContext.blocked_numbers])
+    }, [userDataContext?.blocked_numbers])
 
     const addNumber = () => {
         if (number.length !== 10)return;

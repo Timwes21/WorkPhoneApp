@@ -24,7 +24,7 @@ export default function Greeting() {
             setEditableGreeting(p);
         })()
 
-    }, [userDataContext.greeting_message])
+    }, [userDataContext?.greeting_message])
 
     const saveChanges = () => {
         

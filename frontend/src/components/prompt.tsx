@@ -22,7 +22,7 @@ export default function Prompt() {
             setEditablePrompt(p);
         })()
 
-    }, [userDataContext.ai_prompt])
+    }, [userDataContext?.ai_prompt])
 
     const saveChanges = () => {
         

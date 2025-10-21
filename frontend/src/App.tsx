@@ -32,7 +32,7 @@ function App() {
       .then(response=>response.json())
       .then(data=>{
         console.log(data.results);
-        setUserData(data.results)
+        setUserData(data?.results || dataSkeleton)
         // console.log(userData);
         
         
