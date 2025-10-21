@@ -23,7 +23,8 @@ function App() {
     (async()=>{
 
       const fetchedToken = await getToken() || "";
-      fetch(userSettingsBase + "/get-user-settings", {
+      // fetch(userSettingsBase + "/get-user-settings", {
+      fetch("https://workphoneapp-production.up.railway.app/auth/get-user-settings", {
         headers: {
           "token": fetchedToken
         }

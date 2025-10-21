@@ -35,7 +35,7 @@ export default function Settings(){
 
             
             const fetchedSettings = {
-                real_number: userDataContext.real_number || "",
+                real_number: userDataContext?.real_number || "",
                 name: userDataContext?.name || "",
                 twilio_number: userDataContext?.twilio_number || ""
             }
@@ -43,7 +43,7 @@ export default function Settings(){
             setSettings(fetchedSettings);
             setSettingsCopy(fetchedSettings);
         })()
-    }, [userDataContext.real_number, userDataContext.name, userDataContext.twilio_number])
+    }, [userDataContext?.real_number, userDataContext?.name, userDataContext?.twilio_number])
 
     const onChangeSettings = (setting: keyof UserSetings, value: string) => {
         setSettings(prev=>({
