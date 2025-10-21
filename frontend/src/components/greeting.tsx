@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import {UserDataContext} from '../context/UserDataContext.tsx';
 import { userSettingsBase } from '../routes.ts';
 import { useAuth } from "@clerk/clerk-react";
 
@@ -7,29 +8,23 @@ import { useAuth } from "@clerk/clerk-react";
 
 
 export default function Greeting() {
+    const userDataContext = useContext(UserDataContext);
     const [ token, setToken ] = useState<string>("");
     const [ prompt, setPrompt ] = useState<string>("");
     const [ editableGreeting, setEditableGreeting ] = useState<string>("");
     const [ editting, setEditting ] = useState<boolean>(false);
-    const [ refresh, setRefresh ] = useState<boolean>(false);
     const { getToken } = useAuth();
     
     useEffect(()=> {
         (async()=>{
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const res = await fetch(userSettingsBase + "/get-greeting", {
-                headers : {
-                    "token": fetchedToken
-                }
-            })
-            const fetchedGreeting = (await res.text()).replaceAll("\"", "");
-            
-            setPrompt(fetchedGreeting);
-            setEditableGreeting(fetchedGreeting);
+            const p = userDataContext.greeting_message;
+            setPrompt(p);
+            setEditableGreeting(p);
         })()
 
-    }, [refresh])
+    }, [userDataContext.greeting_message])
 
     const saveChanges = () => {
         
@@ -39,7 +34,7 @@ export default function Greeting() {
                 "Content-Type": "application/json",
                 "token": token
             },
-            body: JSON.stringify({changed: {"greeting_message": editableGreeting}})
+            body: JSON.stringify({changed: {"greeting_message": editableGreeting, "name": userDataContext.name}})
         })
         .then(r=>r.json())
         .then(d=>{
@@ -47,8 +42,7 @@ export default function Greeting() {
             if (d.Changed == "Success"){
                 
                 setEditting(false);
-                setRefresh(!refresh);
-                setPrompt(editableGreeting);
+                userDataContext.greeting_message = editableGreeting
             }
             else {
                 cancel();

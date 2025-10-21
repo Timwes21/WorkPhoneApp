@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from 'react';
+import {UserDataContext} from '../context/UserDataContext.tsx';
 import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 
@@ -10,6 +11,7 @@ type UserSetings = {
 }
 
 export default function Settings(){
+    const userDataContext = useContext(UserDataContext);
     const settingsSkeleton = {
         real_number: "",
         name: "",
@@ -29,31 +31,19 @@ export default function Settings(){
             
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            
-            
 
-            fetch(userSettingsBase + "/user-settings", {
-                headers: {"token": fetchedToken},
-            })
-            .then(response=>{
-                if (response.status === 200){
-                    return response.json();
-                }
-            })
-            .then(data=>{
-                console.log(data);
-                
-                const {name, real_number, twilio_number} = data;
-                const fetchedSettings = {
-                    name: name,
-                    real_number: real_number,
-                    twilio_number: twilio_number
-                }
-                setSettings(fetchedSettings);
-                setSettingsCopy(fetchedSettings);
-            })
+
+            
+            const fetchedSettings = {
+                real_number: userDataContext.real_number || "",
+                name: userDataContext?.name || "",
+                twilio_number: userDataContext?.twilio_number || ""
+            }
+
+            setSettings(fetchedSettings);
+            setSettingsCopy(fetchedSettings);
         })()
-    }, [triggerReload])
+    }, [userDataContext.real_number, userDataContext.name, userDataContext.twilio_number])
 
     const onChangeSettings = (setting: keyof UserSetings, value: string) => {
         setSettings(prev=>({

@@ -6,9 +6,11 @@ import twilioImageFive from "../assets/twilio5.png";
 import { Link } from "react-router-dom";
 import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import {UserDataContext} from '../context/UserDataContext.tsx';
 
 export default function TwilioTutorial(){
+    const userDataContext = useContext(UserDataContext);
     const { getToken } = useAuth();
     const [ webhookToken, setWebhookToken ] = useState<string>("");
 
@@ -24,15 +26,13 @@ export default function TwilioTutorial(){
 
     useEffect(()=> {
         (async()=>{
-            const fetchedToken = await getToken() || "";
-            const fetchedWebhookToken = await fetch(userSettingsBase + '/get-webhook-token', {
-                headers: {"token": fetchedToken},
-            });
-            setWebhookToken((await fetchedWebhookToken.text()).replaceAll("\"", ""));
+            
+            userDataContext.webhook_token
+            setWebhookToken(userDataContext.webhook_token);
 
             
         })()
-    }, [])
+    }, [userDataContext.webhook_token])
 
 
     return (

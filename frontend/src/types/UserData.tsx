@@ -9,3 +9,14 @@ export interface UserData {
     greeting_message: string,
 
 }
+
+export const dataSkeleton: UserData = {
+    name: "",
+    real_number: "",
+    twilio_number: "",
+    webhook_token: "",
+    blocked_message: "",
+    blocked_numbers: [],
+    ai_prompt: "",
+    greeting_message: "",
+}

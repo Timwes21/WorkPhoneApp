@@ -1,32 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import {UserDataContext} from '../context/UserDataContext.tsx';
 import { userSettingsBase } from '../routes.ts';
 import { useAuth } from "@clerk/clerk-react";
 
 
 export default function Prompt() {
+    const userDataContext = useContext(UserDataContext);
     const [ token, setToken ] = useState<string>("");
     const [ prompt, setPrompt ] = useState<string>("");
     const [ editablePrompt, setEditablePrompt ] = useState<string>("");
     const [ editting, setEditting ] = useState<boolean>(false);
-    const [ refresh, setRefresh ] = useState<boolean>(false);
     const { getToken } = useAuth();
     
     useEffect(()=> {
         (async()=>{
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            const res = await fetch(userSettingsBase + "/get-prompt", {
-                headers : {
-                    "token": fetchedToken
-                }
-            })
-            const fetchedMessage = (await res.text()).replaceAll("\"", "");
+            const p = userDataContext.ai_prompt;
             
-            setPrompt(fetchedMessage);
-            setEditablePrompt(fetchedMessage);
+            setPrompt(p);
+            setEditablePrompt(p);
         })()
 
-    }, [refresh])
+    }, [userDataContext.ai_prompt])
 
     const saveChanges = () => {
         
@@ -43,7 +39,7 @@ export default function Prompt() {
             console.log(d);
             if (d.Changed == "Success"){    
                 setEditting(false);
-                setRefresh(!refresh);
+                userDataContext.ai_prompt = editablePrompt;
                 setPrompt(editablePrompt);
             }
             else {

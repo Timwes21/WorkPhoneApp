@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import {UserDataContext} from '../context/UserDataContext.tsx';
 import { userSettingsBase } from '../routes.ts';
 import { useAuth } from "@clerk/clerk-react";
 
@@ -7,33 +8,27 @@ import { useAuth } from "@clerk/clerk-react";
 
 
 export default function BlockedMessage() {
+    const userDataContext = useContext(UserDataContext);
     const [ token, setToken ] = useState<string>("");
     const [ blockedMessage, setBlockedMessage ] = useState<string>("");
     const [ editableBlockedMessage, setEditableBlockedMessage ] = useState<string>("");
     const [ editting, setEditting ] = useState<boolean>(false);
-    const [ refresh, setRefresh ] = useState<boolean>(false);
     const { getToken } = useAuth();
+
+    
+    
     
     useEffect(()=> {
         (async()=>{
+
             const fetchedToken = await getToken() || "";
             setToken(fetchedToken);
-            // const res = await fetch(userSettingsBase + "/get-blocked-message", {
-            const res = await fetch("https://workphoneapp-production.up.railway.app/auth/get-blocked-message", {
-                headers : {
-                    "token": fetchedToken
-                }
-            })
-            console.log(res);
-            
-            const fetchedMessage = (await res.text()).replaceAll("\"", "");
-            console.log(fetchedMessage);
-            
-            setBlockedMessage(fetchedMessage);
-            setEditableBlockedMessage(fetchedMessage);
+            const message = userDataContext.blocked_message;
+            setBlockedMessage(message);
+            setEditableBlockedMessage(message);
         })()
 
-    }, [refresh])
+    }, [userDataContext.blocked_message])
 
     const saveChanges = () => {
         
@@ -51,7 +46,6 @@ export default function BlockedMessage() {
             if (d.Changed == "Success"){
                 
                 setEditting(false);
-                setRefresh(!refresh);
                 setBlockedMessage(editableBlockedMessage);
             }
             else {

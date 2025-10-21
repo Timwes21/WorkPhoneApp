@@ -1,30 +1,24 @@
 import { useAuth } from "@clerk/clerk-react";
-import { useState, useEffect } from "react"
+import { useEffect, useState, useContext } from 'react';
+import {UserDataContext} from '../context/UserDataContext.tsx';
 import { userSettingsBase } from "../routes";
 
 export default function BlockedList(){
+    const userDataContext = useContext(UserDataContext);
     const { getToken } = useAuth();
     const [ token, setToken ] = useState<string>("");
     const [ number, setNumber ] = useState<string>("");
     const [ pressed, setPressed ] = useState<boolean>(false);
     const [ blockedNumbers, setBlockedNumbers ] = useState<string[]>([]);
-    const [ refresh, setRefresh ] = useState<boolean>(false);
 
     useEffect(()=>{
         (async()=>{
             const fetchedToken = await getToken() || ""
             setToken(fetchedToken);
-            fetch(userSettingsBase + "/blocked-numbers", {
-                headers: {
-                    "token": fetchedToken
-                }
-            })
-            .then(response=>response.json())
-            .then(data=>{
-                setBlockedNumbers(data.numbers || [])
-            })
+            const list = userDataContext.blocked_numbers;
+            setBlockedNumbers(list);
         })()
-    }, [refresh])
+    }, [userDataContext.blocked_numbers])
 
     const addNumber = () => {
         if (number.length !== 10)return;
@@ -39,7 +33,8 @@ export default function BlockedList(){
             body: JSON.stringify({"number": number})
         })
         .then(()=>{
-            setRefresh(!refresh)
+            setBlockedNumbers(e=>[...e, number])
+            setNumber("");
             setPressed(false);
         })
     }
@@ -54,7 +49,9 @@ export default function BlockedList(){
             },
             body: JSON.stringify({number: number})
         })
-        .then(()=>setRefresh(!refresh))
+        .then(()=>{
+            setBlockedNumbers(blockedNumbers.filter(e=>e !== number));
+        })
 
     }
 
@@ -71,7 +68,6 @@ export default function BlockedList(){
     )
 
 
-    console.log(blockedNumbers);
     
     const displayBlockedNumbers = (
         <ul style={{color: "black", listStyle: "none"}}>

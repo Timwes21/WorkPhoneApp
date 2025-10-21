@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 
 
 class DefaultMessages:    
@@ -8,4 +7,5 @@ class DefaultMessages:
                     "looked at later to call them back"
     
     def greeting_message(party):
+        party = party if party != "" else "your party"
         return f"Hello! I'm sorry {party} didn't pick up, I can answer any questions you may have."
