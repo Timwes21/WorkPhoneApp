@@ -68,7 +68,7 @@ app.post('/api/webhooks/user-deleted', express.raw({ type: 'application/json' })
   }
 })
 
-app.post('/testing', express.raw({ type: 'application/json' }), async (req, res) => {
+app.get('/testing', async (req, res) => {
   try {
     console.log("testing server");
 
