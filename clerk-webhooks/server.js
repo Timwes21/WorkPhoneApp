@@ -31,7 +31,7 @@ function createUser(evt){
                                 plan: "free",
                                 blocked_numbers: [], 
                                 blocked_message: "You have been restricted from contacting this number",
-                                greeting_message: message = `Hello! I'm sorry ${first_name? first_name: "your party"} didn't pick up, I can answer any questions you may have.`,
+                                greeting_message: `Hello! I'm sorry ${first_name? first_name: "your party"} didn't pick up, I can answer any questions you may have.`,
                                 ai_prompt: "You are an ai assistant that answers the phone when the user does not pick up. You are to get their name and number, as this conversation will be logged and looked at later to call them back"});
 
 }
