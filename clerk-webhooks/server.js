@@ -94,7 +94,7 @@ app.post('/api/webhooks/subscription-created', express.raw({ type: 'application/
     return res.status(400).send('Error verifying webhook');
   }
 })
-const PORT = 1234;
+const PORT = 3000;
 app.listen(PORT, async() =>{
     console.log("Comic Log Server running on port 3000");
     // const url = await ngrok.connect(PORT);
