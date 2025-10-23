@@ -111,7 +111,7 @@ export default function Settings(){
         <div className="settings">
             <div className="settings-label">
                 <span><b>Name:</b> </span>
-                <span><b>Number to Route To:</b> </span>
+                <span><b>Real Number:</b> </span>
                 <span><b>Twilio Number:</b> </span>
             </div>
             {isEditing ? edittingUserSettings: userSettings}

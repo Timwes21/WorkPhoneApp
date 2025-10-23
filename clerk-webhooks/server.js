@@ -48,7 +48,6 @@ function deleteUser(evt){
 
 async function subscriptionCreated(){
   console.log("creating subscription");
-  const evt = await verifyWebhook(req);
   const { id } = evt.data;
 
   userInfoCollection.updateOne({clerk_sub: id}, {$set: {plan: "paid"}});
