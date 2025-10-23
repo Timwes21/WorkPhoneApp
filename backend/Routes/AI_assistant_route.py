@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, Request, WebSocketDisconnect
-from utils.call_choice import dial_agent, dial_person, blocked_number
+from utils.call_choice import dial_agent, dial_person, blocked_number, hang_up_message
 from utils.query import ask_document
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from utils.deepgram_ws import DGWS
@@ -35,8 +35,11 @@ async def call_status(request: Request, webhook_token: str, callsid: str):
         
     user = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0})
 
-    if body["DialCallStatus"] != "completed" and user.get("plan") != "free":
-        return dial_agent(request, user, callsid)
+    if body["DialCallStatus"] != "completed":
+        if user.get("plan", "") != "free":
+            return dial_agent(request, user, callsid)
+        else:
+            return hang_up_message()
     
 
 

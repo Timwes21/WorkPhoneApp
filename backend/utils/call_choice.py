@@ -1,5 +1,6 @@
 from twilio.twiml.voice_response import VoiceResponse, Connect, Say, Stream
 from fastapi.responses import HTMLResponse
+from utils.const import DefaultMessages
 
 def dial_person(webhook_token, user, callsid):
     real_number = f"+1{user["real_number"]}"
@@ -23,8 +24,13 @@ def dial_agent(request, user, callsid):
     return HTMLResponse(content=str(response), media_type="application/xml")
 
 def blocked_number(user):
-    blocked_message = user.get("blocked_message", "You have been restricted from contacting this number")
+    blocked_message = user.get("blocked_message", DefaultMessages.blocked_message)
     response = VoiceResponse()
     response.say(blocked_message)
     return HTMLResponse(content=str(response), media_type="application/xml")
 
+def hang_up_message():
+    hang_up_message = ""
+    response = VoiceResponse()
+    response.say(hang_up_message)
+    return HTMLResponse(content=str(response), media_type="application/xml")
