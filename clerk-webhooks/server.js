@@ -1,5 +1,6 @@
 import { verifyWebhook } from '@clerk/express/webhooks';
 import express from 'express';
+import crypto from 'crypto';
 // import ngrok from "@ngrok/ngrok"
 import dotenv from "dotenv";
 import { MongoClient } from 'mongodb';
@@ -29,6 +30,7 @@ function createUser(evt){
                                 real_number: "",
                                 twilio_number: "",
                                 plan: "free",
+                                webhook_token: crypto.randomBytes(43),
                                 blocked_numbers: [], 
                                 blocked_message: "You have been restricted from contacting this number",
                                 greeting_message: `Hello! I'm sorry ${first_name? first_name: "your party"} didn't pick up, I can answer any questions you may have.`,
