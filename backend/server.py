@@ -1,6 +1,7 @@
 import os
 from utils.lifespan import lifespan
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from ngrok import connect
@@ -34,6 +35,9 @@ app.include_router(auth_routes, prefix="/auth", tags=["auth"])
 app.include_router(test_route, prefix="/portfolio", tags=["test"])
 
 
+app.get("/test", response_class=JSONResponse)
+async def test():
+    return {"test": "success"}
 
 
 
