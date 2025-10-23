@@ -30,7 +30,7 @@ function createUser(evt){
                                 real_number: "",
                                 twilio_number: "",
                                 plan: "free",
-                                webhook_token: crypto.randomBytes(43),
+                                webhook_token: crypto.randomBytes(43).toString("hex"),
                                 blocked_numbers: [], 
                                 blocked_message: "You have been restricted from contacting this number",
                                 greeting_message: `Hello! I'm sorry ${first_name? first_name: "your party"} didn't pick up, I can answer any questions you may have.`,

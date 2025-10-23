@@ -29,7 +29,7 @@ def blocked_number(user):
     response.say(blocked_message)
     return HTMLResponse(content=str(response), media_type="application/xml")
 
-def hang_up_message():
+def hang_up():
     hang_up_message = ""
     response = VoiceResponse()
     response.say(hang_up_message)

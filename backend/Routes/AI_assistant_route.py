@@ -1,5 +1,5 @@
 from fastapi import APIRouter, WebSocket, Request, WebSocketDisconnect
-from utils.call_choice import dial_agent, dial_person, blocked_number, hang_up_message
+from utils.call_choice import dial_agent, dial_person, blocked_number, hang_up
 from utils.query import ask_document
 from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from utils.deepgram_ws import DGWS
@@ -17,12 +17,17 @@ async def handle_incoming_call(request: Request, webhook_token: str):
     user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token})
     form = await request.form()
     callsid = form.get("From", "")
+    
     for i in user.get("blocked_numbers", []):
-        if i in callsid: 
+        blocked_number_calling = i in callsid
+        if blocked_number_calling: 
             return blocked_number(user)
     print("not blocked")
-    if user["real_number"] in callsid:
+    
+    user_calling_themself = user["real_number"] in callsid
+    if user_calling_themself:
         return dial_agent(request, user, callsid)
+    
     print("not the user")
     return dial_person(webhook_token, user, callsid)
 
@@ -39,7 +44,7 @@ async def call_status(request: Request, webhook_token: str, callsid: str):
         if user.get("plan", "") != "free":
             return dial_agent(request, user, callsid)
         else:
-            return hang_up_message()
+            return hang_up()
     
 
 
