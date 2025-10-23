@@ -20,10 +20,14 @@ function App() {
 
 
   useEffect(()=> {
+    console.log("here in useeffect");
     (async()=>{
+      console.log(isSignedIn);
+      
       if (isSignedIn){
-
+        
         const fetchedToken = await getToken() || "";
+        
         fetch(userSettingsBase + "/get-user-settings", {
           // fetch("https://workphoneapp-production.up.railway.app/auth/get-user-settings", {
             headers: {
@@ -40,7 +44,7 @@ function App() {
           })
         }
         })()
-  }, [])
+  }, [isSignedIn])
   
 
   const app = (

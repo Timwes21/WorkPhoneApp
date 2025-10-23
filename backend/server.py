@@ -1,6 +1,6 @@
 import os
 from utils.lifespan import lifespan
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -29,15 +29,13 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+
 app.include_router(AI_assistant_route, prefix="/ai-assistant", tags=["AI Assistant"])
 app.include_router(file_routes, prefix="/files", tags=["files"])
 app.include_router(auth_routes, prefix="/auth", tags=["auth"])
 app.include_router(test_route, prefix="/portfolio", tags=["test"])
 
 
-app.get("/test", response_class=JSONResponse)
-async def test():
-    return {"test": "success"}
 
 
 

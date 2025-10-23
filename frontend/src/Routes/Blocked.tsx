@@ -10,47 +10,9 @@ import BlockedMessage from '../components/blocked-message.tsx';
 
 
 export default function Blocked() {
-    const [ token, setToken ] = useState<string>("");
-    const [ blockedMessage, setBlockedMessage ] = useState<string>("");
-    const [ editting, setEditting ] = useState<boolean>(false);
-    const [ refresh, setRefresh ] = useState<boolean>();
-    const { getToken } = useAuth();
     
-    useEffect(()=> {
-        (async()=>{
-            const fetchedToken = await getToken() || "";
-            setToken(fetchedToken);
-            const fetchedBlockedMessage = await fetch(userSettingsBase + "/get-blocked-message", {
-                headers : {
-                    "token": fetchedToken
-                }
-            })
-            setBlockedMessage((await fetchedBlockedMessage.text()).replaceAll("\"", ""));
-        })()
 
-    }, [refresh])
 
-    const saveChanges = () => {
-        fetch(userSettingsBase + "/update-blocked-message", {
-            method: "POST",
-            headers : {
-                "Content-Type": "application/json",
-                "token": token
-            },
-            body: JSON.stringify({updated: blockedMessage})
-        })
-        .then(()=>{
-            setEditting(false);
-            setRefresh(!refresh);
-        })
-    }
-
-    const editButtons = (
-        <>
-            <button>Save</button>
-            <button onClick={()=>setEditting(false)}>Cancel</button>
-        </>
-    )
 
   return (
     
