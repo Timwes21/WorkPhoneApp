@@ -60,7 +60,7 @@ function App() {
         {isSignedIn && (
           <>
             <Route path='/blocked' element={<Blocked/>}/>
-            {<Route path='/ai' element={<Assistant/>}/>}
+            <Route path='/ai' element={<Assistant/>}/>
           </>
         )}
       </Routes>

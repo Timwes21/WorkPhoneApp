@@ -55,8 +55,8 @@ export default function Settings(){
     const userSettings = (
         <>
             <div className="settings-content">
-                <span>{settings?.name}</span>
-                <span>{settings?.real_number  || "Required"}</span>
+                <span color='black'>{settings?.name || "aaaaaaa"}</span>
+                <span>{settings?.real_number  || "Requireddddd"}</span>
                 <span>{settings?.twilio_number || "Required"}</span>
             </div>
             <button className="edit-button" onClick={()=>setIsEditing(true)}>Edit</button>
