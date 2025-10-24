@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import {UserDataContext} from '../context/UserDataContext.tsx';
+import {UserDataContext} from '../hooks/UserDataContext.tsx';
 import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 
@@ -56,8 +56,8 @@ export default function Settings(){
         <>
             <div className="settings-content">
                 <span>{settings?.name}</span>
-                <span>{settings?.real_number}</span>
-                <span>{settings?.twilio_number}</span>
+                <span>{settings?.real_number  || "Required"}</span>
+                <span>{settings?.twilio_number || "Required"}</span>
             </div>
             <button className="edit-button" onClick={()=>setIsEditing(true)}>Edit</button>
         </>
@@ -74,7 +74,8 @@ export default function Settings(){
         })
         
         if (Object.keys(changed).length === 0) return;
-
+        console.log("did not return");
+        
         fetch(userSettingsBase + "/change-user-settings",{
             method: "POST",
             headers: {
@@ -85,6 +86,8 @@ export default function Settings(){
         })
         .then(response=>{
             if (response.status == 200){
+                console.log("returning");
+                
                 return response.json()
             }
         })

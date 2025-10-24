@@ -1,82 +1,26 @@
-import { useEffect, useState, useContext } from 'react';
-import {UserDataContext} from '../context/UserDataContext.tsx';
-import { userSettingsBase } from '../routes.ts';
-import { useAuth } from "@clerk/clerk-react";
+import {UserDataContext} from '../hooks/UserDataContext.tsx';
+import EditTextBlock from '../hooks/useEditText.tsx';
 
 
 
 
 
 export default function Greeting() {
-    const userDataContext = useContext(UserDataContext);
-    const [ token, setToken ] = useState<string>("");
-    const [ prompt, setPrompt ] = useState<string>("");
-    const [ editableGreeting, setEditableGreeting ] = useState<string>("");
-    const [ editting, setEditting ] = useState<boolean>(false);
-    const { getToken } = useAuth();
-    
-    useEffect(()=> {
-        (async()=>{
-            const fetchedToken = await getToken() || "";
-            setToken(fetchedToken);
-            const p = userDataContext.greeting_message;
-            setPrompt(p);
-            setEditableGreeting(p);
-        })()
-
-    }, [userDataContext?.greeting_message])
-
-    const saveChanges = () => {
-        
-        fetch(userSettingsBase + "/change-user-settings",{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "token": token
-            },
-            body: JSON.stringify({changed: {"greeting_message": editableGreeting, "name": userDataContext.name}})
-        })
-        .then(r=>r.json())
-        .then(d=>{
-            console.log(d);
-            if (d.Changed == "Success"){
-                
-                setEditting(false);
-                userDataContext.greeting_message = editableGreeting
-            }
-            else {
-                cancel();
-            }
-
-        })
-    }
-
-    const cancel = () => {
-        setPrompt(prompt);
-        setEditting(false);
-    }
-
-    const editButtons = (
-        <>
-            <button onClick={saveChanges}>Save</button>
-            <button onClick={cancel}>Cancel</button>
-        </>
-    )
-
+    const { displayedButtons, textLine} = EditTextBlock(UserDataContext, "greeting_message")
     
 
-  return (
+    return (
     
         
-    <div className="blocked-message-con" style={{width: "90%"}}>
-        <h4>Greeting for your AI Assistant</h4>
-        <div style={{display: "flex", justifyContent: "center"}} className="block-message">
-            {editting? <textarea rows={5} value={editableGreeting} onChange={e=>setEditableGreeting(e.target.value)} className='edit-text' name="" id=""></textarea>:prompt}
+        <div className="blocked-message-con" style={{width: "90%"}}>
+            <h4>Greeting for your AI Assistant</h4>
+            <div style={{display: "flex", justifyContent: "center"}} className="block-message">
+                {textLine}
+            </div>
+            <div style={{display: "flex", justifyContent: "center", padding: "5px"}}>
+                {displayedButtons}
+            </div>
         </div>
-        <div style={{display: "flex", justifyContent: "center", padding: "5px"}}>
-            {editting? editButtons:<button onClick={()=>setEditting(true)}>Edit</button>}
-        </div>
-    </div>
   )
 }
 

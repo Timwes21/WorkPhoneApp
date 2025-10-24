@@ -1,17 +1,18 @@
-from twilio.twiml.voice_response import VoiceResponse, Connect, Say, Stream
+from twilio.twiml.voice_response import VoiceResponse, Connect
 from fastapi.responses import HTMLResponse
 from utils.const import DefaultMessages
 
 def dial_person(webhook_token, user, callsid):
     real_number = f"+1{user["real_number"]}"
     response = VoiceResponse()
-    dial = response.dial(number=real_number, action=f"/ai-assistant/get-call-status/{webhook_token}/{callsid}", timeout=15)
+    timeout = 15 if user.get("plan", "") == "paid" else None
+    dial = response.dial(number=real_number, action=f"/ai-assistant/get-call-status/{webhook_token}/{callsid}", timeout=timeout)
     response = VoiceResponse()
     response.append(dial)
     return HTMLResponse(content=str(response), media_type="application/xml")
 
 def dial_agent(request, user, callsid):
-    name = user["name"]
+    name = user.get("name", "Your party's")
     response = VoiceResponse()
     response.say(f"You are being connected to {name}'s AI Assistant")
     host = request.url.hostname

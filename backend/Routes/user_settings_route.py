@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
 from utils.const import DefaultMessages
 import secrets
-from pydantic import BaseModel
+# from pydantic import BaseModel
 from typing import TypedDict
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -19,7 +19,15 @@ router = APIRouter()
 
 
 
-# class UserSettings(TypedDict):
+class UserSettings(TypedDict):
+    name: str
+    real_number: str
+    twilio_number: str
+    webhook_token: str
+    blocked_message: str
+    blocked_numbers: list
+    ai_prompt: str
+    greeting_message: str
 
 
 
@@ -31,8 +39,7 @@ async def user_settings(request: Request):
     clerk_sub = request.app.state.decode_token(request)
     collection = request.app.state.user_info_collection
     print("getting settings")
-    result = await collection.find_one({'clerk_sub': clerk_sub}, {"_id":0, "clerk_sub": 0})
-    # if result.get("")
+    result: UserSettings = await collection.find_one({'clerk_sub': clerk_sub}, {"_id":0, "clerk_sub": 0})
     print("got settings")
     return {"results": result}
 
@@ -83,19 +90,3 @@ async def get_webhook_token(request: Request):
     user_info_collection = request.app.state.user_info_collection
     user_info_collection.update_one({'clerk_sub': clerk_sub}, {"$set": {"webhook_token": webhook_token}})
     return webhook_token
-
-@router.get("/get-webhook-token", response_class=JSONResponse)
-async def get_webhook_token(request: Request):
-    clerk_sub = request.app.state.decode_token(request)
-
-    user_info_collection = request.app.state.user_info_collection
-    user = await user_info_collection.find_one({'clerk_sub': clerk_sub})
-    if user.get("webhook_token", "") == "":
-        webhook_token = secrets.token_urlsafe(32)
-
-        user_info_collection.update_one({'clerk_sub': clerk_sub}, {"$set": {"webhook_token": webhook_token}})
-        return webhook_token
-    print("should precede webhook token")
-    print(user["webhook_token"])
-    return user["webhook_token"]
-

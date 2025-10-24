@@ -1,7 +1,5 @@
 from fastapi import APIRouter, WebSocket, Request, WebSocketDisconnect
 from utils.call_choice import dial_agent, dial_person, blocked_number, hang_up
-from utils.query import ask_document
-from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from utils.deepgram_ws import DGWS
 from datetime import datetime
 import os
@@ -24,7 +22,7 @@ async def handle_incoming_call(request: Request, webhook_token: str):
             return blocked_number(user)
     print("not blocked")
     
-    user_calling_themself = user["real_number"] in callsid
+    user_calling_themself = user.get("real_number", "Number was not detected") in callsid
     if user_calling_themself:
         return dial_agent(request, user, callsid)
     

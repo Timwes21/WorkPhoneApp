@@ -7,12 +7,13 @@ import { Link } from "react-router-dom";
 import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState, useContext } from "react";
-import {UserDataContext} from '../context/UserDataContext.tsx';
+import {UserDataContext} from '../hooks/UserDataContext.tsx';
 
 export default function TwilioTutorial(){
     const userDataContext = useContext(UserDataContext);
     const { getToken } = useAuth();
     const [ webhookToken, setWebhookToken ] = useState<string>("");
+    const [ url , setUrl ] = useState<string>("https://workphoneapp-production.up.railway.app/ai-assistant/incoming-call/");
 
     const generateToken = async() => {
         const fetchedToken = await getToken() || "";
@@ -32,7 +33,12 @@ export default function TwilioTutorial(){
 
             
         })()
-    }, [userDataContext.webhook_token])
+    }, [userDataContext?.webhook_token])
+
+
+    const copyText = () => {
+        navigator.clipboard.writeText(`${url}${webhookToken}`)
+    }
 
 
     return (
@@ -63,12 +69,20 @@ export default function TwilioTutorial(){
                 <ul>
                     <li>Once the number is bought head to your active numbers and click on your number</li>
                     <li>Head to the section where a url comes in through a webhook</li>
-                    <li>Change the url to:  <br /> 
-                        <b>
-                            https://workphoneapp-production.up.railway.app/ai-assistant/incoming-call/{webhookToken}
-                        </b>
+                    <li>The Webhook url is <b> {url}&lt;token&gt;</b></li>
+                    <li>Your webhook is:  <br /> 
+                        <div className="webhook-url-header">
+                            <button onClick={copyText}>Copy</button>
+                            <button onClick={generateToken}>Generate New Token</button>
+                            
+                        </div>
+                        <div className="webhook-url">
+
+                            {url}{webhookToken}
+                        </div>
                         </li>
-                    <button onClick={generateToken}>Generate New Token</button>
+                    <span>Note: The url in twilio should match what is printed here</span>
+
                 </ul>
                 <img className="twilio-image" src={twilioImageFive} alt="" />
                 <Link to="/" id="back-to-create-account">Back</Link>

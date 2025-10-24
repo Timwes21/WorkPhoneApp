@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState, useContext } from 'react';
-import {UserDataContext} from '../context/UserDataContext.tsx';
+import {UserDataContext} from '../hooks/UserDataContext.tsx';
 import { userSettingsBase } from "../routes";
 
 export default function BlockedList(){

@@ -12,6 +12,9 @@
   -moz-osx-font-smoothing: grayscale;
   background: radial-gradient(circle, rgb(255, 0, 0), rgb(141, 0, 0));
 }
+button{
+  cursor: pointer;
+}
 body{
   margin: 0;
   padding: 0;
@@ -23,6 +26,9 @@ body{
   width: 100vw;
   flex: 1;
 
+}
+.page h1{
+  text-shadow: 1px 1px 0px black;
 }
 .page h2 {
   justify-self: center;
@@ -199,4 +205,19 @@ button{
 .edit-text{
   width: 90%;
   height:max-content;
+}
+.webhook-url{
+  background-color: rgb(0, 0, 0);
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 80%;
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px solid grey;
+}
+.webhook-url-header{
+  width: 84%;
+}
+.webhook-url-header button{
+  padding: 5px;
+  margin: 2px;
 }
