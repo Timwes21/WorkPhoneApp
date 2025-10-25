@@ -1,5 +1,5 @@
 import Home from './Routes/Home.tsx';
-import { useEffect, useState, createContext} from "react";
+import { useEffect, useState} from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Blocked from './Routes/Blocked.tsx';
 import TwilioTutorial from './Routes/TwilioTutorial.tsx';
@@ -57,12 +57,12 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/twilio-tutorial' element={<TwilioTutorial/>}/>
-        {isSignedIn && (
+        <Route path='/blocked' element={<Blocked/>}/>
+        <Route path='/ai' element={<Assistant/>}/>
+        {/* {isSignedIn && (
           <>
-            <Route path='/blocked' element={<Blocked/>}/>
-            <Route path='/ai' element={<Assistant/>}/>
           </>
-        )}
+        )} */}
       </Routes>
       </UserDataContext>
     </div>
