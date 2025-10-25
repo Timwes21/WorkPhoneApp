@@ -24,6 +24,7 @@ export default function Assistant() {
             <Logs/>
         
         </div>
+        <div style={{display: "flex", justifyContent: "center"}}>Note: You can test the AI Assistant by calling your twilio number from your phone</div>
         </div>
       </div>
   )
