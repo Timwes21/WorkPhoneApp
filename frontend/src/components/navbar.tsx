@@ -18,7 +18,7 @@ export default function NavBar({page}){
             <>
                 <Link to={"/blocked"} className={`menu-item ${page == "blocked" && "open"}`}>Blocked Numbers</Link>
                 <br />
-                {hasPlan? aiLink: fadedAiLink}
+                {aiLink}
             </>
     )
 

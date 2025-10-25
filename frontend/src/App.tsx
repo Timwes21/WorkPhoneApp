@@ -59,10 +59,6 @@ function App() {
         <Route path='/twilio-tutorial' element={<TwilioTutorial/>}/>
         <Route path='/blocked' element={<Blocked/>}/>
         <Route path='/ai' element={<Assistant/>}/>
-        {/* {isSignedIn && (
-          <>
-          </>
-        )} */}
       </Routes>
       </UserDataContext>
     </div>
