@@ -55,7 +55,7 @@ export default function Settings(){
     const userSettings = (
         <>
             <div className="settings-content">
-                <span style={{color: "black"}}>{settings?.name || "aaaaaaa"}</span>
+                <span style={{color: settings.name == ""? "black":"white"}}>{settings?.name || "aaaaaaa"}</span>
                 <span>{settings?.real_number  || "Required"}</span>
                 <span>{settings?.twilio_number || "Required"}</span>
             </div>
@@ -73,7 +73,10 @@ export default function Settings(){
             }
         })
         
-        if (Object.keys(changed).length === 0) return;
+        if (Object.keys(changed).length === 0) {
+            setIsEditing(false);
+            return
+        };
         console.log("did not return");
         
         fetch(userSettingsBase + "/change-user-settings",{

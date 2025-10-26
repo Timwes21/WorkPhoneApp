@@ -32,7 +32,11 @@ class OrganizedDoc(BaseModel):
 class Docs(BaseModel):
     docs: list[OrganizedDoc]
 
-
+text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=0,
+        length_function=len
+    )
 
 
 
@@ -50,31 +54,25 @@ async def ask_document(clerk_sub, files):
     return None
 
 
-async def save_docs_with_faiss(files_content, clerk_sub, portfolio=False):
+async def save_docs_with_faiss(files_content: list, clerk_sub):
     filepath = get_file_path(clerk_sub)
     if len(files_content) == 0:
         return
+    if not os.path.exists(filepath):
+        print("filepath does not exist yet")
     docs = organize_docs(files_content)
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=0,
-        length_function=len
-    )
 
     docs = text_splitter.split_documents(docs)
 
     library = FAISS.from_documents(docs, embeddings)
 
-    
-    
-    if not portfolio and len(files_content) > 1:
+    try:
         existing = FAISS.load_local(filepath, embeddings, allow_dangerous_deserialization=True)
         existing.merge_from(library)
         existing.save_local(filepath)
-        return
-
-    library.save_local(filepath)
-
+    except RuntimeError:
+        library.save_local(filepath)
+    
 
 def organize_docs(files_content):
     parser = PydanticOutputParser(pydantic_object=Docs)

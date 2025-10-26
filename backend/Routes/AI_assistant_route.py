@@ -121,8 +121,9 @@ async def get_call_logs(request: Request, page: int):
         }
     }
     res: list[dict] = await collection.aggregate([query, projection]).to_list(1)
+    print(res)
 
-    logs = res[0].get("logs", [])
+    logs = res[0].get("logs", []) or []
     has_more = len(logs) == display_number
     print("has more logs", has_more)
 
