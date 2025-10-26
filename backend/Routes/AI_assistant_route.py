@@ -19,14 +19,14 @@ async def handle_incoming_call(request: Request, webhook_token: str):
     for i in user.get("blocked_numbers", []):
         blocked_number_calling = i in callsid
         if blocked_number_calling: 
+            print("blocked number calling")
             return blocked_number(user)
-    print("not blocked")
     
     user_calling_themself = user.get("real_number", "Number was not detected") in callsid
     if user_calling_themself:
+        print("user calling themself")
         return dial_agent(request, user, callsid)
     
-    print("not the user")
     return dial_person(webhook_token, user, callsid)
 
 @router.post("/get-call-status/{webhook_token}/{callsid}")
@@ -57,7 +57,7 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
 
         deepgram = DGWS(user_info_collection, call_log_collection, files_collection)
         call_completed: dict = await deepgram.start(websocket, webhook_token)
-        print("code was executed")
+        print("Call has been completed")
         
         clerk_sub = call_completed["clerk_sub"]
         call_logs = call_completed["call_logs"]

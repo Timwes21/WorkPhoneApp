@@ -68,7 +68,10 @@ class DGWS:
     def load_config(self, greeting, prompt):
         init_session = get_config(greeting, prompt)
         if self.qa:
+            print("Getting the function")
             init_session["agent"]["think"]["functions"].append(ask_docs_function_call)
+        else:
+            print("no function to get")
         return init_session
 
 

@@ -22,7 +22,6 @@ async def save_files(request: Request, file: UploadFile = Form(...)):
     docs_collection = request.app.state.docs_collection
     file_name = file.filename
     clerk_sub = request.app.state.decode_token(request)
-    
     res_docs = await docs_collection.find_one({"clerk_sub": clerk_sub})
     files = res_docs.get('files', [])
     # not as readable but comprehension is faster than nested for loops
