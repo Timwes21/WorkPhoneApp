@@ -14,7 +14,7 @@ import { UserDataContext } from './hooks/userDataContext.tsx';
 
 function App() {
   const { has, isSignedIn, getToken } = useAuth();
-  const hasPlan = has?.({ plan: "paid_tier"});
+  // const hasPlan = has?.({ plan: "paid_tier"});
   const [ userData, setUserData ] = useState<UserData>(dataSkeleton)
 
 
