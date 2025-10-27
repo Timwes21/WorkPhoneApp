@@ -11,6 +11,7 @@ from utils.query import ask_document
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from utils.llm import llm
 from utils.config import get_config
+from utils.const import DefaultSettings
 
 
 
@@ -248,6 +249,5 @@ class DGWS:
 
         print("after the futures")
 
-        return {"call_logs": self.call_logs, "clerk_sub": res_files["clerk_sub"]}
+        return {"call_logs": self.call_logs, "clerk_sub": res_files["clerk_sub"], "time_zone": res_info.get("time_zone", DefaultSettings.time_zone)}
 
-        # print("websocekt should be closed")

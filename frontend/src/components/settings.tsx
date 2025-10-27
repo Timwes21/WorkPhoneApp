@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { UserDataContext } from '../hooks/UserDataContext.tsx';
+import { UserDataContext } from '../hooks/userDataContext.tsx';
 import { userSettingsBase } from "../routes";
 import { useAuth } from "@clerk/clerk-react";
 

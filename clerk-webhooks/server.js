@@ -30,6 +30,7 @@ function createUser(evt){
                                 real_number: "",
                                 twilio_number: "",
                                 plan: "free",
+                                time_zone: "America/New_York",
                                 webhook_token: crypto.randomBytes(43).toString("hex"),
                                 blocked_numbers: [], 
                                 blocked_message: "You have been restricted from contacting this number",

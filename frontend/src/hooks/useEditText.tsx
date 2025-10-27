@@ -3,10 +3,6 @@ import { userSettingsBase } from '../routes';
 import { useAuth } from "@clerk/clerk-react";
 import { UserData } from '../types/UserData';
 
-type EditBlockParams = {
-    UserDataContext: React.Context<UserData>,
-    textType: string
-}
 
 export default function EditTextBlock(UserDataContext: React.Context<UserData>,  textType: string){
     const userDataContext = useContext(UserDataContext);

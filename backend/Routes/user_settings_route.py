@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from passlib.context import CryptContext
-from utils.const import DefaultMessages
+from utils.const import DefaultSettings
 import secrets
 # from pydantic import BaseModel
 from typing import TypedDict
@@ -52,11 +52,11 @@ async def change_user_settings(request: Request):
         collection = request.app.state.user_info_collection
         if "" in changed.values():
             if "ai_prompt" in changed.keys():
-                changed["ai_prompt"] = DefaultMessages.ai_prompt
+                changed["ai_prompt"] = DefaultSettings.ai_prompt
             if "greeting_message" in changed.keys():
-                changed["greeting_message"] = DefaultMessages.greeting_message(changed["name"])
+                changed["greeting_message"] = DefaultSettings.greeting_message(changed["name"])
             if "blocked_message" in changed.keys():
-                changed["blocked_message"] = DefaultMessages.blocked_message
+                changed["blocked_message"] = DefaultSettings.blocked_message
 
         await collection.update_one({"clerk_sub": data['clerk_sub']}, {"$set": changed})
         return {"Changed": "Success"}

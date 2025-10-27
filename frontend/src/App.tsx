@@ -9,7 +9,7 @@ import Assistant from './Routes/AIAssiatant.tsx';
 import { useAuth } from "@clerk/clerk-react";
 import { UserData, dataSkeleton } from './types/UserData.tsx';
 import { userSettingsBase } from './routes.ts';
-import { UserDataContext } from './hooks/UserDataContext.tsx';
+import { UserDataContext } from './hooks/userDataContext.tsx';
 
 
 function App() {

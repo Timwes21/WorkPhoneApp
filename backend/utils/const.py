@@ -1,12 +1,15 @@
 
 
-class DefaultMessages:
+class DefaultSettings:
     blocked_message: str = "You have been restricted from contacting this number"
     ai_prompt: str = "You are an ai assistant that answers the phone when the user does not pick up. " \
                     "You are to get their name and number, as this conversation will be logged and " \
                     "looked at later to call them back, and answer any questions they may have I have documents " \
                     "for you to reference"
     
+    time_zone: str = "America/New_York"
+    
     def greeting_message(party):
         party = party if party != "" else "your party"
         return f"Hello! I'm sorry {party} didn't pick up, I can answer any questions you may have."
+    

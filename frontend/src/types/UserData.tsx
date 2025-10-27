@@ -7,6 +7,7 @@ export interface UserData {
     blocked_numbers: [],
     ai_prompt: string
     greeting_message: string,
+    time_zone: string
 
 }
 
@@ -19,4 +20,5 @@ export const dataSkeleton: UserData = {
     blocked_numbers: [],
     ai_prompt: "",
     greeting_message: "",
+    time_zone: "",
 }

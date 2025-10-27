@@ -61,8 +61,10 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
         
         clerk_sub = call_completed["clerk_sub"]
         call_logs = call_completed["call_logs"]
+        time_zone = call_completed["time_zone"]
 
-        now = datetime.now()
+
+        now = datetime.now(time_zone)
         day = now.strftime("%B; %d; %Y; %H:%M")
         month, day, year, time = day.split(";")
         hours, minutes = time.split(":")
