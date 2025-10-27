@@ -2,6 +2,7 @@ from fastapi import APIRouter, WebSocket, Request, WebSocketDisconnect
 from utils.call_choice import dial_agent, dial_person, blocked_number, hang_up
 from utils.deepgram_ws import DGWS
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import os
 
 OPENAI_API_KEY = os.getenv('OPENAI_KEY')
@@ -64,7 +65,7 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
         time_zone = call_completed["time_zone"]
 
 
-        now = datetime.now(time_zone)
+        now = datetime.now(ZoneInfo(time_zone))
         day = now.strftime("%B; %d; %Y; %H:%M")
         month, day, year, time = day.split(";")
         hours, minutes = time.split(":")
