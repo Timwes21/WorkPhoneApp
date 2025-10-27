@@ -9,7 +9,7 @@ import Assistant from './Routes/AIAssiatant.tsx';
 import { useAuth } from "@clerk/clerk-react";
 import { UserData, dataSkeleton } from './types/UserData.tsx';
 import { userSettingsBase } from './routes.ts';
-import { UserDataContext } from './hooks/userDataContext.tsx';
+import { UserDataContext } from './hooks/useDataContext.tsx';
 
 
 function App() {
@@ -29,7 +29,6 @@ function App() {
         const fetchedToken = await getToken() || "";
         
         fetch(userSettingsBase + "/get-user-settings", {
-          // fetch("https://workphoneapp-production.up.railway.app/auth/get-user-settings", {
             headers: {
               "token": fetchedToken
             }
