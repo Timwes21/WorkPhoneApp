@@ -60,7 +60,7 @@ async def save_docs_with_faiss(files_content: list, clerk_sub):
         return
     if not os.path.exists(filepath):
         print("filepath does not exist yet")
-    docs = organize_docs(files_content)
+    docs = await organize_docs(files_content)
 
     docs = text_splitter.split_documents(docs)
 
@@ -70,17 +70,19 @@ async def save_docs_with_faiss(files_content: list, clerk_sub):
         existing = FAISS.load_local(filepath, embeddings, allow_dangerous_deserialization=True)
         existing.merge_from(library)
         existing.save_local(filepath)
+        print("already exists")
     except RuntimeError:
+        print("not yet saved")
         library.save_local(filepath)
     
 
-def organize_docs(files_content):
+async def organize_docs(files_content):
     parser = PydanticOutputParser(pydantic_object=Docs)
     instructions = parser.get_format_instructions()
     prompt_template = ChatPromptTemplate.from_template("Condense this document into organized sections that make it easy to find things in a vector store, make sure each metadata is unique: {files_content} {format}")
     prompt = prompt_template.partial(format=instructions)
     chain = prompt | llm | parser
-    res: Docs = chain.invoke({"files_content": files_content})
+    res: Docs = await chain.ainvoke({"files_content": files_content})
     print(res)
     docs = []
     for item in res.docs:

@@ -1,4 +1,7 @@
-d = "This "
+def test(t: list[]):
+    print(t)
 
-if d in "boo":
-    print("this counts")
+test("ss")
+
+
+list
