@@ -27,7 +27,7 @@ body{
   flex: 1;
 
 }
-.page h1{
+.page h1, .twilio-instructions li{
   text-shadow: 1px 1px 0px black;
 }
 .page h2 {
@@ -220,4 +220,7 @@ button{
 .webhook-url-header button{
   padding: 5px;
   margin: 2px;
+}
+
+.twilio-instructions{
 }

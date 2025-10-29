@@ -4,6 +4,7 @@ from utils.deepgram_ws import DGWS
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
+from utils.redis import get_setting
 
 OPENAI_API_KEY = os.getenv('OPENAI_KEY')
 
@@ -14,6 +15,15 @@ router = APIRouter()
 async def handle_incoming_call(request: Request, webhook_token: str):
     print("***in incoming-call route***")
     user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token})
+
+    if not user:
+        print("user not exist")
+        return hang_up()
+    
+    await request.app.state.save_settings(webhook_token, user)
+    
+    request.app.state.save_settings(user)
+
     form = await request.form()
     callsid = form.get("From", "")
     
@@ -26,9 +36,9 @@ async def handle_incoming_call(request: Request, webhook_token: str):
     user_calling_themself = user.get("real_number", "Number was not detected") in callsid
     if user_calling_themself:
         print("user calling themself")
-        return dial_agent(request, user, callsid)
+        return dial_agent(request, webhook_token, callsid)
     
-    return dial_person(webhook_token, user, callsid)
+    return dial_person(webhook_token, callsid)
 
 @router.post("/get-call-status/{webhook_token}/{callsid}")
 async def call_status(request: Request, webhook_token: str, callsid: str):
@@ -36,14 +46,16 @@ async def call_status(request: Request, webhook_token: str, callsid: str):
     body: bytes = await request.body()
     body: str = body.decode()
     body = {i.split("=")[0]: i.split("=")[1] for i in body.split("&")}
-        
-    user = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0})
+
+    user = await request.app.state.get_settings(webhook_token)
 
     if body["DialCallStatus"] != "completed":
         if user.get("plan", "") != "free":
             return dial_agent(request, user, callsid)
         else:
+            await request.app.state.remove_settings(webhook_token)
             return hang_up()
+        
     
 
 
@@ -52,11 +64,11 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
     """Handle WebSocket connections between Twilio and OpenAI"""
     await websocket.accept()
     try:
-        user_info_collection = websocket.app.state.user_info_collection
         files_collection = websocket.app.state.docs_collection
         call_log_collection = websocket.app.state.call_log_collection
+        user = await websocket.app.state.get_settings(webhook_token)
 
-        deepgram = DGWS(user_info_collection, call_log_collection, files_collection)
+        deepgram = DGWS(files_collection, user)
         call_completed: dict = await deepgram.start(websocket, webhook_token)
         print("Call has been completed")
         
@@ -94,6 +106,8 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
 
         }
         call_log_collection.update_one({"clerk_sub": clerk_sub}, {"$push": {"logs": call}})
+
+        await websocket.app.state.remove_settings(webhook_token)
         
         
 

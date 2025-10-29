@@ -7,11 +7,12 @@ import inspect
 from dotenv import load_dotenv
 from utils.functions import FUNCTION_MAP
 from fastapi import WebSocket
-from utils.query import ask_document
+from utils.query import get_retriever
 from langchain.chains.retrieval_qa.base import RetrievalQA
 from utils.llm import llm
 from utils.config import get_config
 from utils.const import DefaultSettings
+from utils.redis import get_setting
 
 
 
@@ -35,9 +36,8 @@ ask_docs_function_call = {
     
 
 class DGWS:
-    def __init__(self, user_info_collection, call_log_collection, files_collection):
+    def __init__(self, user_info_collection, files_collection):
         self.user_info_collection = user_info_collection 
-        self.call_log_collection = call_log_collection
         self.files_collection = files_collection
         self.qa = None
         self.functions = FUNCTION_MAP
@@ -208,14 +208,13 @@ class DGWS:
                 break
 
 
-    async def start(self, websocket, webhook_token):
-        res_info = await self.user_info_collection.find_one({"webhook_token": webhook_token})
-        print(res_info)
-        res_files = await self.files_collection.find_one({"clerk_sub": res_info["clerk_sub"]})
+    async def start(self, websocket, user):
+        clerk_sub = user["clerk_sub"]
+        res_files = await self.files_collection.find_one({"clerk_sub": clerk_sub})
 
         files = res_files.get('files', [])
 
-        retriever = await ask_document(res_info["clerk_sub"], files)
+        retriever = await get_retriever(clerk_sub, files)
         
         if retriever == None:
             print("No files match\n")
@@ -228,8 +227,8 @@ class DGWS:
         streamsid_queue = asyncio.Queue()
 
         async with self.sts_connect() as sts_ws:
-            greeting = res_info["greeting_message"]
-            prompt = res_info["ai_prompt"]
+            greeting = user.get("greeting_message", DefaultSettings.greeting_message(user.get("name", "your party")))
+            prompt = user.get("ai_prompt", DefaultSettings.ai_prompt)
             config = self.load_config(greeting, prompt)
             await sts_ws.send(json.dumps(config))
             
@@ -249,5 +248,5 @@ class DGWS:
 
         print("after the futures")
 
-        return {"call_logs": self.call_logs, "clerk_sub": res_files["clerk_sub"], "time_zone": res_info.get("time_zone", DefaultSettings.time_zone)}
+        return {"call_logs": self.call_logs, "clerk_sub": res_files["clerk_sub"], "time_zone": user.get("time_zone", DefaultSettings.time_zone)}
 

@@ -10,6 +10,5 @@ class DefaultSettings:
     time_zone: str = "America/New_York"
     
     def greeting_message(party):
-        party = party if party != "" else "your party"
         return f"Hello! I'm sorry {party} didn't pick up, I can answer any questions you may have."
     

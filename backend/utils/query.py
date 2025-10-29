@@ -40,7 +40,7 @@ text_splitter = RecursiveCharacterTextSplitter(
 
 
 
-async def ask_document(clerk_sub, files):
+async def get_retriever(clerk_sub, files):
     filepath = get_file_path(clerk_sub)
     print(filepath)
     if len(files) > 0:

@@ -1,37 +1,23 @@
-from zoneinfo import ZoneInfo
-import zoneinfo
-from datetime import datetime
-
-
-# all_zones = zoneinfo.available_timezones()
-# times_zones = {"misc": []}
-# for i in all_zones:
-#     if "/" in i:
-#         print(i)
-#         time_zone = i.split("/")
-#         if time_zone.__len__() > 2:
-#             country = time_zone[0]
-#             time_zone.remove(country)
-#             province = "/".join(time_zone)
-#         else:
-#             country, province = time_zone
-#         if country not in times_zones.keys():
-#             times_zones[country] = []
-#         times_zones[country].append(province)
-#     else:
-#         times_zones["misc"].append(i)
+from twilio.rest import Client
 
 
 
 
+twilio_number = "+17722476154"
 
-# for i in times_zones.keys():
-#     print("-------------------------", i, "-------------------------")
-#     print(times_zones[i], "\n")
+client = Client(account_sid, auth_token)
+def send_message():
+    message = client.messages.create(
+        body="Hello world!",
+        from_=twilio_number,   # your Twilio number
+        to="+17726210972"       # recipient
+    )
+    print(message.sid)
+    print(message.status)
 
 
-# # now_et = datetime.now(ZoneInfo("America/New_York"))
-# # day = now_et.strftime("%B; %d; %Y; %H:%M")
+def check_message():
+    msg = client.messages("SMbae53e27d59860c67ce002174bf927f3").fetch()
+    print(msg.status, msg.error_code, msg.error_message)
 
-now = datetime.now(time_zone)
-day = now.strftime("%B; %d; %Y; %H:%M")
+check_message()
