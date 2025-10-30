@@ -17,10 +17,6 @@ async def lifespan(app: FastAPI):
     app.state.decode_token = decode_access_token
     app.state.create_token = create_access_token
 
-    app.state.save_settings = save_settings
-    app.state.get_setting = get_setting
-    app.state.get_settings = get_settings
-    app.state.remove_settings = remove_settings
 
     app.state.get_data = get_data
 

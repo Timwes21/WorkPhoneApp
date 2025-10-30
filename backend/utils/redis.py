@@ -8,6 +8,19 @@ HOST = os.getenv("REDIS_HOST")
 PASSWORD = os.getenv("REDIS_PASSWORD")
 
 
+possible_fields = [
+    "clerk_sub"
+    "name"
+    "real_number"
+    "twilio_number"
+    "webhook_token"
+    "blocked_message"
+    "ai_prompt"
+    "greeting_message"
+    "plan"
+]
+
+
 r = redis.Redis(host=HOST, port=PORT, password=PASSWORD, db=0, decode_responses=True)
 
 async def save_settings(webhook_token: str, user_info: dict):
@@ -15,7 +28,7 @@ async def save_settings(webhook_token: str, user_info: dict):
 
 
 async def remove_settings(webhook_token):
-    await r.hdel(webhook_token)
+    await r.hdel(webhook_token, *possible_fields)
 
 async def get_setting(webhook_token: str, setting_key: str)-> str:
     setting = await r.hget(webhook_token, setting_key)

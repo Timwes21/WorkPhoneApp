@@ -12,7 +12,6 @@ from langchain.chains.retrieval_qa.base import RetrievalQA
 from utils.llm import llm
 from utils.config import get_config
 from utils.const import DefaultSettings
-from utils.redis import get_setting
 
 
 
@@ -36,8 +35,7 @@ ask_docs_function_call = {
     
 
 class DGWS:
-    def __init__(self, user_info_collection, files_collection):
-        self.user_info_collection = user_info_collection 
+    def __init__(self, files_collection):
         self.files_collection = files_collection
         self.qa = None
         self.functions = FUNCTION_MAP
@@ -139,8 +137,8 @@ class DGWS:
 
         if decoded["type"] == "FunctionCallRequest":
             print("function call")
-            # asyncio.create_task(self.handle_function_call_request(decoded, sts_ws))
-            await self.handle_function_call_request(decoded, sts_ws)
+            task = asyncio.create_task(self.handle_function_call_request(decoded, sts_ws))
+            await task
 
 
     async def sts_sender(self, sts_ws, audio_queue):

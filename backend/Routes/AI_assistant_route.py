@@ -4,7 +4,7 @@ from utils.deepgram_ws import DGWS
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
-from utils.redis import get_setting
+from utils.redis import get_settings, save_settings, remove_settings
 
 OPENAI_API_KEY = os.getenv('OPENAI_KEY')
 
@@ -14,15 +14,14 @@ router = APIRouter()
 @router.api_route("/incoming-call/{webhook_token}", methods=["GET", "POST"])
 async def handle_incoming_call(request: Request, webhook_token: str):
     print("***in incoming-call route***")
-    user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token})
-
+    user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0, "blocked_numbers": 0})
+    print(user)
     if not user:
         print("user not exist")
         return hang_up()
+    print(type(webhook_token))
+    await save_settings(webhook_token, user)
     
-    await request.app.state.save_settings(webhook_token, user)
-    
-    request.app.state.save_settings(user)
 
     form = await request.form()
     callsid = form.get("From", "")
@@ -36,7 +35,7 @@ async def handle_incoming_call(request: Request, webhook_token: str):
     user_calling_themself = user.get("real_number", "Number was not detected") in callsid
     if user_calling_themself:
         print("user calling themself")
-        return dial_agent(request, webhook_token, callsid)
+        return dial_agent(request, user, callsid)
     
     return dial_person(webhook_token, callsid)
 
@@ -47,7 +46,7 @@ async def call_status(request: Request, webhook_token: str, callsid: str):
     body: str = body.decode()
     body = {i.split("=")[0]: i.split("=")[1] for i in body.split("&")}
 
-    user = await request.app.state.get_settings(webhook_token)
+    user = await get_settings(webhook_token)
 
     if body["DialCallStatus"] != "completed":
         if user.get("plan", "") != "free":
@@ -66,10 +65,10 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
     try:
         files_collection = websocket.app.state.docs_collection
         call_log_collection = websocket.app.state.call_log_collection
-        user = await websocket.app.state.get_settings(webhook_token)
+        user = await get_settings(webhook_token)
 
-        deepgram = DGWS(files_collection, user)
-        call_completed: dict = await deepgram.start(websocket, webhook_token)
+        deepgram = DGWS(files_collection)
+        call_completed: dict = await deepgram.start(websocket, user)
         print("Call has been completed")
         
         clerk_sub = call_completed["clerk_sub"]
@@ -107,7 +106,7 @@ async def handle_media_stream(websocket: WebSocket, webhook_token: str, callsid:
         }
         call_log_collection.update_one({"clerk_sub": clerk_sub}, {"$push": {"logs": call}})
 
-        await websocket.app.state.remove_settings(webhook_token)
+        await remove_settings(webhook_token)
         
         
 
