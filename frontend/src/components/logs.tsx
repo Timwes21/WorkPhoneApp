@@ -18,21 +18,24 @@ export default function Logs(){
     useEffect(()=>{
         (async()=>{
             const fetchedToken = await getToken() || ""
-            fetch(`${base}/ai-assistant/get-call-logs/${page}`, {
-                headers: {
-                    "token": fetchedToken
-                }
-            })
-            .then(response=>response.json())
-            .then(data=>{
-                setHasMore(data.hasMore);
-                console.log(data);
-                
-                
-                setLogs(prev=>[...prev, ...data.CallLogList])
-                setLoading(false);
+            if (fetchedToken){
 
-            })
+                fetch(`${base}/ai-assistant/get-call-logs/${page}`, {
+                    headers: {
+                        "token": fetchedToken
+                    }
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    setHasMore(data.hasMore);
+                    console.log(data);
+                    
+                    
+                    setLogs(prev=>[...prev, ...data.CallLogList])
+                    setLoading(false);
+                    
+                })
+            }
         })()    
     }, [page])
 
