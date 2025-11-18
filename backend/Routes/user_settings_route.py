@@ -70,6 +70,7 @@ async def change_user_settings(request: Request):
 async def add_blocked_number(request: Request):
     data: dict = await request.app.state.get_data(request)
     number = data["number"]
+    print(number)
     collection = request.app.state.user_info_collection
     await collection.update_one({"clerk_sub": data['clerk_sub']}, {"$push": {"blocked_numbers": number}})
     return {"Changed": "Success"}

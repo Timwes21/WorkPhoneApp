@@ -24,6 +24,8 @@ possible_fields = [
 r = redis.Redis(host=HOST, port=PORT, password=PASSWORD, db=0, decode_responses=True)
 
 async def save_settings(webhook_token: str, user_info: dict):
+    if "blocked_numbers" in user_info:
+        del user_info["blocked_numbers"]
     await r.hset(webhook_token, mapping=user_info)
 
 

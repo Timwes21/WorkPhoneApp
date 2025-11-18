@@ -27,11 +27,11 @@ export default function Logs(){
                 })
                 .then(response=>response.json())
                 .then(data=>{
-                    setHasMore(data.hasMore);
+                    setHasMore(data.hasMore || false);
                     console.log(data);
                     
                     
-                    setLogs(prev=>[...prev, ...data.CallLogList])
+                    setLogs(prev=>[...prev, ...data.CallLogList || []])
                     setLoading(false);
                     
                 })

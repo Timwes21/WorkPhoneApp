@@ -14,19 +14,22 @@ router = APIRouter()
 @router.api_route("/incoming-call/{webhook_token}", methods=["GET", "POST"])
 async def handle_incoming_call(request: Request, webhook_token: str):
     print("***in incoming-call route***")
-    user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0, "blocked_numbers": 0})
+    user: dict = await request.app.state.user_info_collection.find_one({"webhook_token": webhook_token}, {"_id": 0})
     print(user)
     if not user:
         print("user not exist")
         return hang_up()
+    blocked_numbers = user.get("blocked_numbers", []) or []
     print(type(webhook_token))
     await save_settings(webhook_token, user)
-    
+    print(user)
 
     form = await request.form()
     callsid = form.get("From", "")
-    
-    for i in user.get("blocked_numbers", []):
+
+    print("blocked_numbers: ", blocked_numbers)
+    for i in blocked_numbers:
+        print("blocked number", i)
         blocked_number_calling = i in callsid
         if blocked_number_calling: 
             print("blocked number calling")
