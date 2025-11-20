@@ -20,7 +20,6 @@ async def handle_incoming_call(request: Request, webhook_token: str):
         print("user not exist")
         return hang_up()
     blocked_numbers = user.get("blocked_numbers", []) or []
-    print(type(webhook_token))
     await save_settings(webhook_token, user)
     print(user)
 
@@ -40,7 +39,7 @@ async def handle_incoming_call(request: Request, webhook_token: str):
         print("user calling themself")
         return dial_agent(request, user, callsid)
     
-    return dial_person(webhook_token, callsid)
+    return dial_person(webhook_token, user, callsid)
 
 @router.post("/get-call-status/{webhook_token}/{callsid}")
 async def call_status(request: Request, webhook_token: str, callsid: str):
